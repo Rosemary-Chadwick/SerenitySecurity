@@ -69,6 +69,7 @@ export const AssetDetails = () => {
       
       <div className="asset-actions">
         <Link to={`/assets/edit/${asset.id}`} className="btn">Edit Asset</Link>
+        <Link to={`/assets/delete/${asset.id}`} className="btn">Delete Asset and Asset Reports</Link>
         <Link to={`/assets/report/create/${asset.id}`} className="btn">Create New Report</Link>
       </div>
       
@@ -93,7 +94,6 @@ export const AssetDetails = () => {
               <tr>
                 <th>Date</th>
                 <th>Status</th>
-                <th>Actions</th>
               </tr>
             </thead>
             <tbody>

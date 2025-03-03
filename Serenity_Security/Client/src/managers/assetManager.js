@@ -1,5 +1,7 @@
+const _apiUrl = "/api/asset";
+
 export const getUserAssets = () => {
-  return fetch("/api/asset", {
+  return fetch(_apiUrl, {
     method: "GET",
     credentials: "same-origin",
     headers: {
@@ -16,7 +18,7 @@ export const getUserAssets = () => {
   });
 };
 export const getAssetById = (id) => {
-  return fetch(`/api/asset/${id}`, {
+  return fetch(_apiUrl + `/${id}`, {
     method: "GET",
     credentials: "same-origin", // This ensures cookies are sent with the request
     headers: {
