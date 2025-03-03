@@ -12,8 +12,8 @@ using Serenity_Security.Data;
 namespace Serenity_Security.Migrations
 {
     [DbContext(typeof(Serenity_SecurityDbContext))]
-    [Migration("20250227172002_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250228013258_1740706371")]
+    partial class _1740706371
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -152,13 +152,13 @@ namespace Serenity_Security.Migrations
                         {
                             Id = "dbc40bc6-0829-4ac5-a3ed-180f5e916a5f",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "66713418-277f-4124-b5c8-e1362a2f2785",
+                            ConcurrencyStamp = "ea938af0-755b-46a3-9877-c62ef27c0afa",
                             Email = "admina@strator.comx",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEH1qTCU4F/XZb3QsXmo4sNnPGprkawcA8cwmTtSRaSuJ+LCQQLI2Otl4nuRuvxmPfg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDZHQ/Qw6l8la1bB3+xVKmkJNyDbRE0K1gtElPA89fxNXxy7QCx4MDzms0OXTZhHVQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "746966d6-04c6-4c37-834e-35f5d543230a",
+                            SecurityStamp = "0708d188-8bc4-4e5c-8c16-cbaed49e8cf5",
                             TwoFactorEnabled = false,
                             UserName = "Administrator"
                         });
@@ -252,6 +252,107 @@ namespace Serenity_Security.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Serenity_Security.Models.Asset", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("IpAddress")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("OsVersion")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SystemName")
+                        .HasColumnType("text");
+
+                    b.Property<int>("SystemTypeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SystemTypeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Asset");
+                });
+
+            modelBuilder.Entity("Serenity_Security.Models.Report", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AssetId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssetId");
+
+                    b.ToTable("Report");
+                });
+
+            modelBuilder.Entity("Serenity_Security.Models.ReportVulnerability", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DiscoveredAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("ReportId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("VulnerabilityId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportId");
+
+                    b.HasIndex("VulnerabilityId");
+
+                    b.ToTable("ReportVulnerability");
+                });
+
+            modelBuilder.Entity("Serenity_Security.Models.SystemType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SystemType");
+                });
+
             modelBuilder.Entity("Serenity_Security.Models.UserProfile", b =>
                 {
                     b.Property<int>("Id")
@@ -260,7 +361,10 @@ namespace Serenity_Security.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Address")
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Email")
                         .HasColumnType("text");
 
                     b.Property<string>("FirstName")
@@ -269,7 +373,13 @@ namespace Serenity_Security.Migrations
                     b.Property<string>("IdentityUserId")
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("LastName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Username")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -282,11 +392,40 @@ namespace Serenity_Security.Migrations
                         new
                         {
                             Id = 1,
-                            Address = "101 Main Street",
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FirstName = "Admina",
                             IdentityUserId = "dbc40bc6-0829-4ac5-a3ed-180f5e916a5f",
+                            IsAdmin = false,
                             LastName = "Strator"
                         });
+                });
+
+            modelBuilder.Entity("Serenity_Security.Models.Vulnerability", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CveId")
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("CvsScore")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("PublishedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("SeverityLevel")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Vulnerability");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -340,6 +479,55 @@ namespace Serenity_Security.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Serenity_Security.Models.Asset", b =>
+                {
+                    b.HasOne("Serenity_Security.Models.SystemType", "SystemType")
+                        .WithMany("Assets")
+                        .HasForeignKey("SystemTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Serenity_Security.Models.UserProfile", "User")
+                        .WithMany("Assets")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SystemType");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Serenity_Security.Models.Report", b =>
+                {
+                    b.HasOne("Serenity_Security.Models.Asset", "Asset")
+                        .WithMany("Reports")
+                        .HasForeignKey("AssetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Asset");
+                });
+
+            modelBuilder.Entity("Serenity_Security.Models.ReportVulnerability", b =>
+                {
+                    b.HasOne("Serenity_Security.Models.Report", "Report")
+                        .WithMany("ReportVulnerabilities")
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Serenity_Security.Models.Vulnerability", "Vulnerability")
+                        .WithMany("ReportVulnerabilities")
+                        .HasForeignKey("VulnerabilityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Report");
+
+                    b.Navigation("Vulnerability");
+                });
+
             modelBuilder.Entity("Serenity_Security.Models.UserProfile", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
@@ -347,6 +535,31 @@ namespace Serenity_Security.Migrations
                         .HasForeignKey("IdentityUserId");
 
                     b.Navigation("IdentityUser");
+                });
+
+            modelBuilder.Entity("Serenity_Security.Models.Asset", b =>
+                {
+                    b.Navigation("Reports");
+                });
+
+            modelBuilder.Entity("Serenity_Security.Models.Report", b =>
+                {
+                    b.Navigation("ReportVulnerabilities");
+                });
+
+            modelBuilder.Entity("Serenity_Security.Models.SystemType", b =>
+                {
+                    b.Navigation("Assets");
+                });
+
+            modelBuilder.Entity("Serenity_Security.Models.UserProfile", b =>
+                {
+                    b.Navigation("Assets");
+                });
+
+            modelBuilder.Entity("Serenity_Security.Models.Vulnerability", b =>
+                {
+                    b.Navigation("ReportVulnerabilities");
                 });
 #pragma warning restore 612, 618
         }

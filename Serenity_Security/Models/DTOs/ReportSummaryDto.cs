@@ -1,10 +1,8 @@
 namespace Serenity_Security.Models.DTOs;
 
-public class ReportDetailsDto
+public class ReportSummaryDto
 {
     public int Id { get; set; }
     public DateTime CreatedAt { get; set; }
     public bool IsCompleted { get; set; }
-    public AssetDto Asset { get; set; }
-    public List<VulnerabilityDetailDto> Vulnerabilities { get; set; }
 }

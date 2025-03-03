@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Serenity_Security.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class _1740706371 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -49,6 +49,36 @@ namespace Serenity_Security.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SystemType",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SystemType", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Vulnerability",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CveId = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    CvsScore = table.Column<decimal>(type: "numeric", nullable: false),
+                    PublishedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    SeverityLevel = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Vulnerability", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -163,10 +193,13 @@ namespace Serenity_Security.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    IdentityUserId = table.Column<string>(type: "text", nullable: true),
                     FirstName = table.Column<string>(type: "text", nullable: true),
                     LastName = table.Column<string>(type: "text", nullable: true),
-                    Address = table.Column<string>(type: "text", nullable: true)
+                    Email = table.Column<string>(type: "text", nullable: true),
+                    Username = table.Column<string>(type: "text", nullable: true),
+                    IdentityUserId = table.Column<string>(type: "text", nullable: true),
+                    IsAdmin = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -178,6 +211,84 @@ namespace Serenity_Security.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Asset",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    SystemName = table.Column<string>(type: "text", nullable: true),
+                    IpAddress = table.Column<string>(type: "text", nullable: true),
+                    OsVersion = table.Column<string>(type: "text", nullable: true),
+                    SystemTypeId = table.Column<int>(type: "integer", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Asset", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Asset_SystemType_SystemTypeId",
+                        column: x => x.SystemTypeId,
+                        principalTable: "SystemType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Asset_UserProfiles_UserId",
+                        column: x => x.UserId,
+                        principalTable: "UserProfiles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Report",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AssetId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Report", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Report_Asset_AssetId",
+                        column: x => x.AssetId,
+                        principalTable: "Asset",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ReportVulnerability",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    DiscoveredAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ReportId = table.Column<int>(type: "integer", nullable: false),
+                    VulnerabilityId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReportVulnerability", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ReportVulnerability_Report_ReportId",
+                        column: x => x.ReportId,
+                        principalTable: "Report",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ReportVulnerability_Vulnerability_VulnerabilityId",
+                        column: x => x.VulnerabilityId,
+                        principalTable: "Vulnerability",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
@@ -186,7 +297,7 @@ namespace Serenity_Security.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "dbc40bc6-0829-4ac5-a3ed-180f5e916a5f", 0, "66713418-277f-4124-b5c8-e1362a2f2785", "admina@strator.comx", false, false, null, null, null, "AQAAAAIAAYagAAAAEH1qTCU4F/XZb3QsXmo4sNnPGprkawcA8cwmTtSRaSuJ+LCQQLI2Otl4nuRuvxmPfg==", null, false, "746966d6-04c6-4c37-834e-35f5d543230a", false, "Administrator" });
+                values: new object[] { "dbc40bc6-0829-4ac5-a3ed-180f5e916a5f", 0, "ea938af0-755b-46a3-9877-c62ef27c0afa", "admina@strator.comx", false, false, null, null, null, "AQAAAAIAAYagAAAAEDZHQ/Qw6l8la1bB3+xVKmkJNyDbRE0K1gtElPA89fxNXxy7QCx4MDzms0OXTZhHVQ==", null, false, "0708d188-8bc4-4e5c-8c16-cbaed49e8cf5", false, "Administrator" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
@@ -195,8 +306,8 @@ namespace Serenity_Security.Migrations
 
             migrationBuilder.InsertData(
                 table: "UserProfiles",
-                columns: new[] { "Id", "Address", "FirstName", "IdentityUserId", "LastName" },
-                values: new object[] { 1, "101 Main Street", "Admina", "dbc40bc6-0829-4ac5-a3ed-180f5e916a5f", "Strator" });
+                columns: new[] { "Id", "CreatedAt", "Email", "FirstName", "IdentityUserId", "IsAdmin", "LastName", "Username" },
+                values: new object[] { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Admina", "dbc40bc6-0829-4ac5-a3ed-180f5e916a5f", false, "Strator", null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -236,6 +347,31 @@ namespace Serenity_Security.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Asset_SystemTypeId",
+                table: "Asset",
+                column: "SystemTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Asset_UserId",
+                table: "Asset",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Report_AssetId",
+                table: "Report",
+                column: "AssetId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReportVulnerability_ReportId",
+                table: "ReportVulnerability",
+                column: "ReportId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReportVulnerability_VulnerabilityId",
+                table: "ReportVulnerability",
+                column: "VulnerabilityId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserProfiles_IdentityUserId",
                 table: "UserProfiles",
                 column: "IdentityUserId");
@@ -260,10 +396,25 @@ namespace Serenity_Security.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "UserProfiles");
+                name: "ReportVulnerability");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Report");
+
+            migrationBuilder.DropTable(
+                name: "Vulnerability");
+
+            migrationBuilder.DropTable(
+                name: "Asset");
+
+            migrationBuilder.DropTable(
+                name: "SystemType");
+
+            migrationBuilder.DropTable(
+                name: "UserProfiles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
