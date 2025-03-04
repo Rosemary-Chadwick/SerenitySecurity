@@ -4,6 +4,7 @@ import Register from "./auth/Register";
 import { AuthorizedRoute } from "./auth/AuthorizedRoute";
 import { AssetList } from "./assets/AssetList"; // Import the new component
 import { AssetDetails } from "./assets/AssetDetails";
+import { AssetForm } from "./assets/AssetCreateUpdateForm";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -32,6 +33,22 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           element={
             <AuthorizedRoute loggedInUser={loggedInUser}>
               <AssetDetails />
+            </AuthorizedRoute>
+          }
+        />
+        <Route
+          path="assets/create"
+          element={
+            <AuthorizedRoute loggedInUser={loggedInUser}>
+              <AssetForm />
+            </AuthorizedRoute>
+          }
+        />
+                <Route
+          path="assets/edit/:id"
+          element={
+            <AuthorizedRoute loggedInUser={loggedInUser}>
+              <AssetForm />
             </AuthorizedRoute>
           }
         />

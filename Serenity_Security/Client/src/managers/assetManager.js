@@ -1,4 +1,4 @@
-const _apiUrl = "/api/asset";
+const _apiUrl = "/api/asset"; // assets?
 
 export const getUserAssets = () => {
   return fetch(_apiUrl, {
@@ -32,5 +32,28 @@ export const getAssetById = (id) => {
     } else {
       throw new Error("Failed to fetch asset");
     }
+  });
+};
+export const createAsset = (asset) => {
+  return fetch(_apiUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(asset),
+  }).then((res) => res.json());
+};
+export const updateAsset = (id, asset) => {
+  return fetch(`${_apiUrl}/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(asset),
+  });
+};
+export const deleteAsset = (id) => {
+  return fetch(`${_apiUrl}/${id}`, {
+    method: "DELETE",
   });
 };

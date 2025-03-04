@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
-import { getAssetById } from "../../managers/assetManager";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { deleteAsset, getAssetById } from "../../managers/assetManager";
 
 export const AssetDetails = () => {
     const [asset, setAsset] = useState(null);
@@ -9,6 +9,7 @@ export const AssetDetails = () => {
     const [filteredReports, setFilteredReports] = useState([]);
     const [filterType, setFilterType] = useState("recent"); // recent is default : !completed
     const { id } = useParams();
+    const navigate = useNavigate();
 
   useEffect(() => { // this one sets all the data in state
     setIsLoading(true);
@@ -69,8 +70,21 @@ export const AssetDetails = () => {
       
       <div className="asset-actions">
         <Link to={`/assets/edit/${asset.id}`} className="btn">Edit Asset</Link>
-        <Link to={`/assets/delete/${asset.id}`} className="btn">Delete Asset and Asset Reports</Link>
         <Link to={`/assets/report/create/${asset.id}`} className="btn">Create New Report</Link>
+        <button
+          onClick={() => {
+            if (window.confirm("Are you sure you want to delete this asset and all it's reports?"))
+            {
+              deleteAsset(asset.id).then(() => {
+                window.alert("Asset successfully deleted!");
+                navigate('/')
+              });
+            }
+          }}
+          className="btn"
+          >
+            Delete Asset and Asset Reports?
+          </button>
       </div>
       
       <div className="reports-section">

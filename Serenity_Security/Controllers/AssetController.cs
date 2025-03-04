@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -115,5 +116,131 @@ public class AssetController : ControllerBase
         {
             return BadRequest(ex.Message);
         }
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<ActionResult<AssetDto>> CreateAsset(AssetCreateUpdateDto assetDto)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        string identityUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(identityUserId))
+        {
+            return Unauthorized();
+        }
+
+        var userProfile = await _dbContext.UserProfiles.FirstOrDefaultAsync(up =>
+            up.IdentityUserId == identityUserId
+        );
+
+        if (userProfile == null)
+        {
+            return NotFound("User profile not found");
+        }
+
+        var asset = new Asset
+        {
+            UserId = userProfile.Id,
+            SystemName = assetDto.SystemName,
+            IpAddress = assetDto.IpAddress,
+            OsVersion = assetDto.OsVersion,
+            SystemTypeId = assetDto.SystemTypeId,
+            IsActive = assetDto.IsActive,
+            CreatedAt = DateTime.Now,
+        };
+
+        _dbContext.Assets.Add(asset);
+        await _dbContext.SaveChangesAsync();
+
+        var systemTypeName = await _dbContext
+            .SystemTypes.Where(st => st.Id == asset.SystemTypeId)
+            .Select(st => st.Name)
+            .FirstOrDefaultAsync();
+
+        var responseDto = new AssetDto
+        {
+            Id = asset.Id,
+            SystemName = asset.SystemName,
+            IpAddress = asset.IpAddress,
+            OsVersion = asset.OsVersion,
+            SystemTypeName = systemTypeName,
+            IsActive = asset.IsActive,
+        };
+
+        return CreatedAtAction(nameof(GetById), new { id = asset.Id }, responseDto);
+    }
+
+    [HttpPut("{id}")]
+    [Authorize]
+    public async Task<ActionResult> UpdateAsset(int id, AssetCreateUpdateDto assetDto)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var asset = await _dbContext.Assets.FindAsync(id);
+
+        if (asset == null)
+        {
+            return NotFound("Asset not found");
+        }
+
+        string identityUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(identityUserId))
+        {
+            return Unauthorized();
+        }
+
+        var userProfile = await _dbContext.UserProfiles.FirstOrDefaultAsync(up =>
+            up.IdentityUserId == identityUserId
+        );
+
+        if (userProfile == null || asset.UserId != userProfile.Id)
+        {
+            return Forbid();
+        }
+
+        asset.SystemName = assetDto.SystemName;
+        asset.IpAddress = assetDto.IpAddress;
+        asset.OsVersion = assetDto.OsVersion;
+        asset.SystemTypeId = assetDto.SystemTypeId;
+        asset.IsActive = assetDto.IsActive;
+
+        try
+        {
+            await _dbContext.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException) // The exception is thrown when Entity Framework detects that the data you're trying to update has been modified by another process since you retrieved it.
+        {
+            if (!await _dbContext.Assets.AnyAsync(a => a.Id == id)) // checks to see if data still exists... if it does then it throws another exception
+            {
+                return NotFound();
+            }
+            else
+            {
+                throw;
+            }
+        }
+        return NoContent(); // maybe do a return CreatedAtAction(nameof(GetById), new { id = asset.Id }, responseDto); here too... have to modify this method
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult DeleteAsset(int id)
+    {
+        Asset assetToDelete = _dbContext.Assets.SingleOrDefault((a) => a.Id == id);
+        if (assetToDelete == null)
+        {
+            return NotFound("Asset not found");
+        }
+        _dbContext.Assets.Remove(assetToDelete);
+        _dbContext.SaveChanges();
+        return NoContent();
     }
 }
