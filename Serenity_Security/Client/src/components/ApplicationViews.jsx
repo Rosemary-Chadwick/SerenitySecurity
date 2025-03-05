@@ -5,6 +5,8 @@ import { AuthorizedRoute } from "./auth/AuthorizedRoute";
 import { AssetList } from "./assets/AssetList"; // Import the new component
 import { AssetDetails } from "./assets/AssetDetails";
 import { AssetForm } from "./assets/AssetCreateUpdateForm";
+import { ReportDetails } from "./reports/ReportDetails";
+import { VulnerabilityDetails } from "./vulnerabilities/VulnerabilityDetails";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -49,6 +51,23 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           element={
             <AuthorizedRoute loggedInUser={loggedInUser}>
               <AssetForm />
+            </AuthorizedRoute>
+          }
+        />
+                <Route
+          path="report/:id"
+          element={
+            <AuthorizedRoute loggedInUser={loggedInUser}>
+              <ReportDetails />
+            </AuthorizedRoute>
+          }
+        />
+        
+        <Route
+          path="vulnerability/:id"
+          element={
+            <AuthorizedRoute loggedInUser={loggedInUser}>
+              <VulnerabilityDetails />
             </AuthorizedRoute>
           }
         />

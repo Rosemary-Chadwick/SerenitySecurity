@@ -1,23 +1,23 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { deleteAsset, getAssetById } from "../../managers/assetManager";
 
 export const AssetDetails = () => {
-    const [asset, setAsset] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [filteredReports, setFilteredReports] = useState([]);
-    const [filterType, setFilterType] = useState("recent"); // recent is default : !completed
-    const { id } = useParams();
-    const navigate = useNavigate();
+  const [asset, setAsset] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [filteredReports, setFilteredReports] = useState([]);
+  const [filterType, setFilterType] = useState("recent"); // recent is default : !completed
+  const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => { // this one sets all the data in state
     setIsLoading(true);
     getAssetById(id)
       .then((data) => {
         setAsset(data);
-        setFilteredReports(data.reports); // all reports
-        setIsLoading(false); // turns off the loading indicator 
+        setFilteredReports(data.reports); // with all reports
+        setIsLoading(false); 
       })
       .catch((err) => {
         setError(err.message);
@@ -33,7 +33,7 @@ export const AssetDetails = () => {
     if (filterType === "completed") {
       reports = reports.filter(r => r.isCompleted);
     } else if (filterType === "inProgress") {
-        reports = reports.filter(r => !r.isCompleted);
+      reports = reports.filter(r => !r.isCompleted);
     } else {
       reports.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     }
@@ -43,6 +43,20 @@ export const AssetDetails = () => {
 
   const handleFilterChange = (e) => {
     setFilterType(e.target.value);
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+  };
+
+  const handleDelete = () => {
+    if (window.confirm("Are you sure you want to delete this asset?")) { //  and all its reports
+      deleteAsset(asset.id).then(() => {
+        window.alert("Asset successfully deleted!");
+        navigate('/');
+      });
+    }
   };
 
   if (isLoading) {
@@ -58,73 +72,83 @@ export const AssetDetails = () => {
   }
 
   return (
-    <div className="asset-details">
-      <h2>{asset.systemName}</h2>
-      <div className="asset-info">
-        <p><strong>IP Address:</strong> {asset.ipAddress}</p>
-        <p><strong>OS Version:</strong> {asset.osVersion}</p>
-        <p><strong>System Type:</strong> {asset.systemTypeName}</p>
-        <p><strong>Status:</strong> {asset.isActive ? "Active" : "Inactive"}</p>
-        <p><strong>Created:</strong> {new Date(asset.createdAt).toLocaleDateString()}</p>
+    <div className="container mt-4">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h2>{asset.systemName}</h2>
+        <button 
+          onClick={() => navigate("/assets")}
+          className="btn btn-secondary"
+        >
+          Back to Assets
+        </button>
+      </div>
+
+      <div className="card mb-4">
+        <div className="card-header">
+          <h4>Asset Information</h4>
+        </div>
+        <div className="card-body">
+          <p><strong>IP Address:</strong> {asset.ipAddress}</p>
+          <p><strong>OS Version:</strong> {asset.osVersion}</p>
+          <p><strong>System Type:</strong> {asset.systemTypeName}</p>
+          <p><strong>Status:</strong> {asset.isActive ? "Active" : "Inactive"}</p>
+          <p><strong>Created:</strong> {formatDate(asset.createdAt)}</p>
+        </div>
+      </div>
+
+      <div className="d-flex mb-3">
+        <Link to={`/assets/edit/${asset.id}`} className="btn btn-primary me-2">
+          Update Asset
+        </Link>
+        <button 
+          onClick={handleDelete}
+          className="btn btn-danger"
+        >
+          Delete Asset
+        </button>
       </div>
       
-      <div className="asset-actions">
-        <Link to={`/assets/edit/${asset.id}`} className="btn">Edit Asset</Link>
-        <Link to={`/assets/report/create/${asset.id}`} className="btn">Create New Report</Link>
-        <button
-          onClick={() => {
-            if (window.confirm("Are you sure you want to delete this asset and all it's reports?"))
-            {
-              deleteAsset(asset.id).then(() => {
-                window.alert("Asset successfully deleted!");
-                navigate('/')
-              });
-            }
-          }}
-          className="btn"
-          >
-            Delete Asset and Asset Reports?
-          </button>
-      </div>
-      
-      <div className="reports-section">
-        <h3>Reports</h3>
-        
-        <div className="report-filters">
+      <div className="card">
+        <div className="card-header d-flex justify-content-between align-items-center">
+          <h4>Report History</h4>
           <select 
             value={filterType} 
             onChange={handleFilterChange}
-            className="filter-select"
+            className="form-select w-auto"
           >
             <option value="recent">Most Recent</option>
             <option value="inProgress">In Progress</option>
             <option value="completed">Completed</option>
           </select>
         </div>
-        
-        {filteredReports.length > 0 ? (
-          <table className="report-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredReports.map(report => (
-                <tr key={report.id}>
-                  <td>{new Date(report.createdAt).toLocaleDateString()}</td>
-                  <td>{report.isCompleted ? "Completed" : "In Progress"}</td>
-                  <td>
-                    <Link to={`/reports/${report.id}`}>View Details</Link>
-                  </td>
+        <div className="card-body">
+          {filteredReports.length > 0 ? (
+            <table className="table table-striped">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p>No reports match your filter. {asset.reports.length === 0 ? "Create a new report to check for vulnerabilities." : ""}</p>
-        )}
+              </thead>
+              <tbody>
+                {filteredReports.map(report => (
+                  <tr key={report.id}>
+                    <td>{formatDate(report.createdAt)}</td>
+                    <td>{report.isCompleted ? "Completed" : "In Progress"}</td>
+                    <td>
+                      <Link to={`/report/${report.id}`} className="btn btn-info btn-sm">
+                        View Details
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>No reports match your filter. {asset.reports.length === 0 ? "Create a new report to check for vulnerabilities." : ""}</p>
+          )}
+        </div>
       </div>
     </div>
   );

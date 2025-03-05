@@ -10,10 +10,8 @@ export const getAllSystemTypes = () => {
   }).then((res) => {
     if (res.ok) {
       return res.json();
-    } else if (res.status === 401) {
-      throw new Error("Unauthorized");
     } else {
-      throw new Error("Failed to fetch system types");
+      throw new Error("An error occurred while fetching the system types");
     }
   });
 };

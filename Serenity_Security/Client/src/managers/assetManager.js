@@ -10,10 +10,8 @@ export const getUserAssets = () => {
   }).then((res) => {
     if (res.ok) {
       return res.json();
-    } else if (res.status === 401) {
-      throw new Error("Unauthorized");
     } else {
-      throw new Error("Failed to fetch assets");
+      throw new Error("An error occurred while fetching the assets");
     }
   });
 };
@@ -27,10 +25,8 @@ export const getAssetById = (id) => {
   }).then((res) => {
     if (res.ok) {
       return res.json();
-    } else if (res.status === 404) {
-      throw new Error("Asset not found");
     } else {
-      throw new Error("Failed to fetch asset");
+      throw new Error("An error occurred while fetching the asset");
     }
   });
 };

@@ -1,4 +1,3 @@
-using System.Reflection;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,13 +24,13 @@ public class AssetController : ControllerBase
     public IActionResult Get()
     {
         try
-        {
+        { // find the current user
             string identityUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(identityUserId))
             {
                 return Unauthorized();
             }
-
+            // find that users info
             UserProfile userProfile = _dbContext.UserProfiles.FirstOrDefault(up =>
                 up.IdentityUserId == identityUserId
             );
@@ -40,7 +39,7 @@ public class AssetController : ControllerBase
             {
                 return Unauthorized();
             }
-
+            // find the asset's info
             List<AssetDto> assets = _dbContext
                 .Assets.Include(a => a.SystemType)
                 .Where(a => a.UserId == userProfile.Id)
@@ -173,7 +172,11 @@ public class AssetController : ControllerBase
         };
 
         return CreatedAtAction(nameof(GetById), new { id = asset.Id }, responseDto);
-    }
+    } // CreatedAtAction - 201 with a Location header where the new asset can be found
+
+    // nameof(GetById) - References another controller method by name (avoids hardcoding strings)
+    // responseDto - The created asset object will be serialized in the response body
+
 
     [HttpPut("{id}")]
     [Authorize]
@@ -184,7 +187,7 @@ public class AssetController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        var asset = await _dbContext.Assets.FindAsync(id);
+        var asset = await _dbContext.Assets.FindAsync(id); // optimized to first check the EF Core change tracker (in-memory cache) before hitting the database
 
         if (asset == null)
         {
