@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Serenity_Security.Data;
@@ -11,9 +12,11 @@ using Serenity_Security.Data;
 namespace Serenity_Security.Migrations
 {
     [DbContext(typeof(Serenity_SecurityDbContext))]
-    partial class Serenity_SecurityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250228153340_1740756810")]
+    partial class _1740756810
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,7 +55,13 @@ namespace Serenity_Security.Migrations
                         {
                             Id = "c3aaeb97-d2ba-4a53-a521-4eea61e59b35",
                             Name = "Admin",
-                            NormalizedName = "admin"
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "d3aabc98-e3cb-5b64-b632-5ffa72b70b46",
+                            Name = "User",
+                            NormalizedName = "USER"
                         });
                 });
 
@@ -149,15 +158,43 @@ namespace Serenity_Security.Migrations
                         {
                             Id = "dbc40bc6-0829-4ac5-a3ed-180f5e916a5f",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "96d99113-4b73-4333-81d1-f1bf9392f54d",
-                            Email = "admina@strator.comx",
+                            ConcurrencyStamp = "a6dd741f-b24f-4dad-9dd6-06de30b1e97e",
+                            Email = "Rosmary.Chadwick@proton.me",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAENDiM5ymu/DoLlSZTdSQztPdRgO9ocoRsE/jp1x004CialU9WwQkyw/vfayGGq/QSA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPylsbJ7ZFWRGo30iW0ygCdaMtJN03dnRdnTLZPtzj1YBfVDLSvojae5IRDdJ5a/kQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "20212b71-ab3f-4ee2-b646-52f5abe2184f",
+                            SecurityStamp = "52180a05-4961-44fa-afb2-85b659bdb1ad",
                             TwoFactorEnabled = false,
-                            UserName = "Administrator"
+                            UserName = "Rosemary"
+                        },
+                        new
+                        {
+                            Id = "7eb05375-f2a3-4ecf-92b5-4dbd11831839",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "7419d6a6-1423-4728-b496-f2ade613ff98",
+                            Email = "jason.turner@example.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAIAAYagAAAAEOOVZ60P/OEqkihliLjCJs/kftXR2ZsQc8qgw/U5jNjTZ1z0fySj/k59+PSm3l1Gfw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "87334d95-529e-4393-8aaa-16978b2e1753",
+                            TwoFactorEnabled = false,
+                            UserName = "JasonT"
+                        },
+                        new
+                        {
+                            Id = "9f86ba56-ea82-4b9a-b593-7878b5d8916e",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "48b4cefd-7a06-4adc-977a-2a6f055aae01",
+                            Email = "samantha.brooks@example.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAIAAYagAAAAEKDUZmY9gNw0nyB5zxziUURZn5AAu16xjFogawwTLjUpynoIeC8FZqO51LJgWPiWvQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "d3d3d967-6707-4bbe-8446-1e2234815512",
+                            TwoFactorEnabled = false,
+                            UserName = "SamanthaB"
                         });
                 });
 
@@ -227,6 +264,16 @@ namespace Serenity_Security.Migrations
                         {
                             UserId = "dbc40bc6-0829-4ac5-a3ed-180f5e916a5f",
                             RoleId = "c3aaeb97-d2ba-4a53-a521-4eea61e59b35"
+                        },
+                        new
+                        {
+                            UserId = "7eb05375-f2a3-4ecf-92b5-4dbd11831839",
+                            RoleId = "d3aabc98-e3cb-5b64-b632-5ffa72b70b46"
+                        },
+                        new
+                        {
+                            UserId = "9f86ba56-ea82-4b9a-b593-7878b5d8916e",
+                            RoleId = "d3aabc98-e3cb-5b64-b632-5ffa72b70b46"
                         });
                 });
 
@@ -324,6 +371,72 @@ namespace Serenity_Security.Migrations
                             SystemName = "HomeRouter",
                             SystemTypeId = 3,
                             UserId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2024, 1, 29, 14, 22, 45, 0, DateTimeKind.Unspecified),
+                            IpAddress = "192.168.2.100",
+                            IsActive = true,
+                            OsVersion = "Windows 10 Home 21H2",
+                            SystemName = "Gaming-PC",
+                            SystemTypeId = 1,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateTime(2024, 1, 29, 15, 45, 33, 0, DateTimeKind.Unspecified),
+                            IpAddress = "192.168.2.101",
+                            IsActive = true,
+                            OsVersion = "Ubuntu 22.04 LTS",
+                            SystemName = "Work-Laptop",
+                            SystemTypeId = 2,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedAt = new DateTime(2024, 1, 29, 16, 10, 27, 0, DateTimeKind.Unspecified),
+                            IpAddress = "192.168.2.150",
+                            IsActive = true,
+                            OsVersion = "HomeOS 4.2",
+                            SystemName = "SmartHome-Hub",
+                            SystemTypeId = 4,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedAt = new DateTime(2024, 1, 31, 9, 45, 12, 0, DateTimeKind.Unspecified),
+                            IpAddress = "192.168.3.100",
+                            IsActive = true,
+                            OsVersion = "macOS Sonoma 14.2",
+                            SystemName = "Personal-Laptop",
+                            SystemTypeId = 2,
+                            UserId = 3
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedAt = new DateTime(2024, 1, 31, 10, 22, 33, 0, DateTimeKind.Unspecified),
+                            IpAddress = "192.168.3.101",
+                            IsActive = true,
+                            OsVersion = "Windows 11 Home 23H2",
+                            SystemName = "Home-Desktop",
+                            SystemTypeId = 1,
+                            UserId = 3
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CreatedAt = new DateTime(2024, 1, 31, 11, 15, 27, 0, DateTimeKind.Unspecified),
+                            IpAddress = "192.168.3.150",
+                            IsActive = true,
+                            OsVersion = "Debian 12",
+                            SystemName = "MediaServer",
+                            SystemTypeId = 5,
+                            UserId = 3
                         });
                 });
 
@@ -362,6 +475,26 @@ namespace Serenity_Security.Migrations
                     b.HasData(
                         new
                         {
+                            Id = 1,
+                            CreatedAt = new DateTime(2024, 2, 1, 9, 40, 22, 0, DateTimeKind.Unspecified),
+                            Description = "This vulnerability allows attackers with admin access to execute arbitrary code through deserialization of untrusted data. Update to a patched version and implement proper input validation and authentication controls.",
+                            FixedVersion = "Apache Pulsar 2.10.5, 2.11.2, or 3.0.1+",
+                            IsCompleted = false,
+                            VerificationSteps = "1. Update Apache Pulsar to version 2.10.5, 2.11.2, or 3.0.1 or higher\n        2. Verify the installed version using: bin/pulsar version\n        3. Check configuration files for unsafe deserialization settings\n        4. Restart the Pulsar service: systemctl restart pulsar\n        5. Verify service is running with: systemctl status pulsar\n        6. Test the service by running a secure client connection and attempting to publish/consume messages\n        7. Review logs for any deserialization warnings or errors: grep -r \"deserialization\" /var/log/pulsar/",
+                            VulnerabilityId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2024, 2, 2, 15, 55, 33, 0, DateTimeKind.Unspecified),
+                            Description = "This vulnerability allows attackers to enumerate valid usernames by measuring timing differences during authentication failures. Update to the latest version and configure sshd to use consistent timing for all authentication responses.",
+                            FixedVersion = "OpenSSH 9.6+",
+                            IsCompleted = false,
+                            VerificationSteps = "1. Update OpenSSH to version 9.6 or later\n        2. Check the installed version using: ssh -V\n        3. Edit /etc/ssh/sshd_config to add: UseDNS no\n        4. Set appropriate authentication attempt limits with: MaxAuthTries 4\n        5. Restart the SSH service: systemctl restart sshd\n        6. Verify timing consistency with multiple login attempts using different usernames\n        7. Check authentication logs for patterns: grep \"authentication failure\" /var/log/auth.log",
+                            VulnerabilityId = 2
+                        },
+                        new
+                        {
                             Id = 3,
                             CreatedAt = new DateTime(2024, 2, 1, 10, 55, 45, 0, DateTimeKind.Unspecified),
                             Description = "This vulnerability in macOS WindowServer component could allow local attackers to elevate privileges through memory corruption. Install all available security updates and limit access to privileged accounts.",
@@ -382,6 +515,16 @@ namespace Serenity_Security.Migrations
                         },
                         new
                         {
+                            Id = 5,
+                            CreatedAt = new DateTime(2024, 2, 3, 11, 35, 22, 0, DateTimeKind.Unspecified),
+                            Description = "This vulnerability allows attackers to force Redis to perform unintended external server requests through malicious JNDI URIs. Update to a patched version and ensure Redis is not exposed to untrusted networks.",
+                            FixedVersion = "Redis 6.2.14, 7.0.15, or 7.2.4+",
+                            IsCompleted = false,
+                            VerificationSteps = "1. Update Redis to version 6.2.14, 7.0.15, or 7.2.4 or higher\n        2. Verify the installed version using: redis-cli info server | grep redis_version\n        3. Check and modify Redis configuration to disable or restrict JNDI URI handling\n        4. Restart the Redis service: systemctl restart redis\n        5. Verify service is running with: systemctl status redis\n        6. Test with a monitoring tool to ensure JNDI requests are properly handled\n        7. Review Redis logs for suspicious connection attempts: grep -r \"jndi\" /var/log/redis/",
+                            VulnerabilityId = 5
+                        },
+                        new
+                        {
                             Id = 6,
                             CreatedAt = new DateTime(2024, 2, 1, 11, 25, 45, 0, DateTimeKind.Unspecified),
                             Description = "This vulnerability allows remote attackers to execute unauthorized commands via the web interface due to insufficient input validation. Update firmware immediately and restrict administration access.",
@@ -389,6 +532,26 @@ namespace Serenity_Security.Migrations
                             IsCompleted = false,
                             VerificationSteps = "1. Update DD-WRT firmware to r48000 or later through the web interface\n        2. Verify the installed version in the router admin panel under Status > Router\n        3. After update, perform a hard reset (30-30-30 reset) to ensure clean configuration\n        4. Secure the admin interface with a strong password\n        5. Disable remote administration if not needed\n        6. Change default SSH and admin ports\n        7. Verify proper input sanitization by testing forms with special characters\n        8. Enable logging and monitor for suspicious activities",
                             VulnerabilityId = 6
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedAt = new DateTime(2024, 2, 2, 16, 20, 33, 0, DateTimeKind.Unspecified),
+                            Description = "This cross-site scripting vulnerability in Home Assistant Core's Logbook component could allow attackers to inject malicious scripts. Update to a patched version and use proper input sanitization.",
+                            FixedVersion = "Home Assistant Core 2023.2.0+",
+                            IsCompleted = false,
+                            VerificationSteps = "1. Update Home Assistant Core to version 2023.2.0 or later\n        2. Verify the installed version on the About page in Home Assistant\n        3. Restart the Home Assistant service\n        4. Check logs for any XSS-related warnings or errors\n        5. Clear browser cache and cookies after updating\n        6. Test the Logbook component with properly sanitized inputs\n        7. Consider implementing Content Security Policy (CSP) headers for additional protection\n        8. Periodically check for updates and security advisories",
+                            VulnerabilityId = 7
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedAt = new DateTime(2024, 2, 2, 15, 57, 45, 0, DateTimeKind.Unspecified),
+                            Description = "This race condition in the Linux kernel's IPv6 subsystem could lead to memory corruption and local privilege escalation. Apply kernel updates as soon as possible and limit access to local user accounts.",
+                            FixedVersion = "Kernel 6.1.67, 6.6.8, or distribution-specific patches",
+                            IsCompleted = false,
+                            VerificationSteps = "1. Update the Linux kernel to version 6.1.67, 6.6.8 or later using the package manager\n        2. Verify the installed kernel version with: uname -r\n        3. Apply all pending security updates: apt update && apt upgrade -y\n        4. Reboot the system to apply the kernel updates\n        5. Check system logs for IPv6-related errors: grep -i ipv6 /var/log/syslog\n        6. Consider temporarily disabling IPv6 if updates cannot be applied immediately:\n           echo \"net.ipv6.conf.all.disable_ipv6 = 1\" >> /etc/sysctl.conf && sysctl -p\n        7. Test IPv6 functionality after updates to ensure proper operation\n        8. Monitor system for unusual behavior or performance issues",
+                            VulnerabilityId = 8
                         },
                         new
                         {
@@ -416,9 +579,6 @@ namespace Serenity_Security.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("boolean");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AssetId");
@@ -430,22 +590,55 @@ namespace Serenity_Security.Migrations
                         {
                             Id = 1,
                             AssetId = 1,
-                            CreatedAt = new DateTime(2024, 2, 1, 9, 30, 12, 0, DateTimeKind.Unspecified),
-                            IsCompleted = false
+                            CreatedAt = new DateTime(2024, 2, 1, 9, 30, 12, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 2,
                             AssetId = 2,
-                            CreatedAt = new DateTime(2024, 2, 1, 10, 45, 22, 0, DateTimeKind.Unspecified),
-                            IsCompleted = false
+                            CreatedAt = new DateTime(2024, 2, 1, 10, 45, 22, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 3,
                             AssetId = 3,
-                            CreatedAt = new DateTime(2024, 2, 1, 11, 15, 33, 0, DateTimeKind.Unspecified),
-                            IsCompleted = false
+                            CreatedAt = new DateTime(2024, 2, 1, 11, 15, 33, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AssetId = 4,
+                            CreatedAt = new DateTime(2024, 2, 2, 14, 22, 30, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 5,
+                            AssetId = 5,
+                            CreatedAt = new DateTime(2024, 2, 2, 15, 45, 12, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 6,
+                            AssetId = 6,
+                            CreatedAt = new DateTime(2024, 2, 2, 16, 10, 45, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 7,
+                            AssetId = 7,
+                            CreatedAt = new DateTime(2024, 2, 3, 9, 15, 22, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 8,
+                            AssetId = 8,
+                            CreatedAt = new DateTime(2024, 2, 3, 10, 30, 45, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 9,
+                            AssetId = 9,
+                            CreatedAt = new DateTime(2024, 2, 3, 11, 25, 18, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -496,6 +689,76 @@ namespace Serenity_Security.Migrations
                             ReportId = 3,
                             VulnerabilityId = 6,
                             DiscoveredAt = new DateTime(2024, 2, 1, 11, 20, 45, 0, DateTimeKind.Unspecified),
+                            Id = 0
+                        },
+                        new
+                        {
+                            ReportId = 4,
+                            VulnerabilityId = 4,
+                            DiscoveredAt = new DateTime(2024, 2, 2, 14, 25, 33, 0, DateTimeKind.Unspecified),
+                            Id = 0
+                        },
+                        new
+                        {
+                            ReportId = 4,
+                            VulnerabilityId = 9,
+                            DiscoveredAt = new DateTime(2024, 2, 2, 14, 27, 45, 0, DateTimeKind.Unspecified),
+                            Id = 0
+                        },
+                        new
+                        {
+                            ReportId = 5,
+                            VulnerabilityId = 2,
+                            DiscoveredAt = new DateTime(2024, 2, 2, 15, 50, 22, 0, DateTimeKind.Unspecified),
+                            Id = 0
+                        },
+                        new
+                        {
+                            ReportId = 5,
+                            VulnerabilityId = 8,
+                            DiscoveredAt = new DateTime(2024, 2, 2, 15, 52, 33, 0, DateTimeKind.Unspecified),
+                            Id = 0
+                        },
+                        new
+                        {
+                            ReportId = 6,
+                            VulnerabilityId = 7,
+                            DiscoveredAt = new DateTime(2024, 2, 2, 16, 15, 45, 0, DateTimeKind.Unspecified),
+                            Id = 0
+                        },
+                        new
+                        {
+                            ReportId = 7,
+                            VulnerabilityId = 3,
+                            DiscoveredAt = new DateTime(2024, 2, 3, 9, 20, 33, 0, DateTimeKind.Unspecified),
+                            Id = 0
+                        },
+                        new
+                        {
+                            ReportId = 7,
+                            VulnerabilityId = 9,
+                            DiscoveredAt = new DateTime(2024, 2, 3, 9, 22, 45, 0, DateTimeKind.Unspecified),
+                            Id = 0
+                        },
+                        new
+                        {
+                            ReportId = 8,
+                            VulnerabilityId = 4,
+                            DiscoveredAt = new DateTime(2024, 2, 3, 10, 35, 22, 0, DateTimeKind.Unspecified),
+                            Id = 0
+                        },
+                        new
+                        {
+                            ReportId = 9,
+                            VulnerabilityId = 5,
+                            DiscoveredAt = new DateTime(2024, 2, 3, 11, 30, 45, 0, DateTimeKind.Unspecified),
+                            Id = 0
+                        },
+                        new
+                        {
+                            ReportId = 9,
+                            VulnerabilityId = 8,
+                            DiscoveredAt = new DateTime(2024, 2, 3, 11, 32, 33, 0, DateTimeKind.Unspecified),
                             Id = 0
                         });
                 });
@@ -583,11 +846,35 @@ namespace Serenity_Security.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            FirstName = "Admina",
+                            CreatedAt = new DateTime(2024, 1, 26, 9, 14, 32, 0, DateTimeKind.Unspecified),
+                            Email = "Rosmary.Chadwick@proton.me",
+                            FirstName = "Rosemary",
                             IdentityUserId = "dbc40bc6-0829-4ac5-a3ed-180f5e916a5f",
+                            IsAdmin = true,
+                            LastName = "Chadwick",
+                            Username = "Rosemary"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2024, 1, 28, 14, 22, 45, 0, DateTimeKind.Unspecified),
+                            Email = "jason.turner@example.com",
+                            FirstName = "Jason",
+                            IdentityUserId = "7eb05375-f2a3-4ecf-92b5-4dbd11831839",
                             IsAdmin = false,
-                            LastName = "Strator"
+                            LastName = "Turner",
+                            Username = "JasonT"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2024, 1, 30, 11, 8, 17, 0, DateTimeKind.Unspecified),
+                            Email = "samantha.brooks@example.com",
+                            FirstName = "Samantha",
+                            IdentityUserId = "9f86ba56-ea82-4b9a-b593-7878b5d8916e",
+                            IsAdmin = false,
+                            LastName = "Brooks",
+                            Username = "SamanthaB"
                         });
                 });
 

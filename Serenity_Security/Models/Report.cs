@@ -5,7 +5,7 @@ public class Report
     public int Id { get; set; }
     public int AssetId { get; set; }
     public DateTime CreatedAt { get; set; }
-
+    public bool IsCompleted { get; set; }
     public Asset Asset { get; set; }
     public List<ReportVulnerability> ReportVulnerabilities { get; set; }
 }

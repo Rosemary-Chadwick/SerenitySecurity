@@ -7,4 +7,5 @@ public class ReportListDto
     public string AssetName { get; set; }
     public int VulnerabilityCount { get; set; }
     public int HighSeverityCount { get; set; }
+    public bool IsCompleted { get; set; }
 }

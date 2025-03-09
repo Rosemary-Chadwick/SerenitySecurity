@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Serenity_Security.Data;
@@ -11,9 +12,11 @@ using Serenity_Security.Data;
 namespace Serenity_Security.Migrations
 {
     [DbContext(typeof(Serenity_SecurityDbContext))]
-    partial class Serenity_SecurityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250228160428_1740758659")]
+    partial class _1740758659
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -149,13 +152,13 @@ namespace Serenity_Security.Migrations
                         {
                             Id = "dbc40bc6-0829-4ac5-a3ed-180f5e916a5f",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "96d99113-4b73-4333-81d1-f1bf9392f54d",
+                            ConcurrencyStamp = "82323fa4-7706-470f-aa81-1567fb843336",
                             Email = "admina@strator.comx",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAENDiM5ymu/DoLlSZTdSQztPdRgO9ocoRsE/jp1x004CialU9WwQkyw/vfayGGq/QSA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELj45FLrJivoVNmRd0iehb47u9MQvjnQX6q0KG4AAbu4PsF9gR8CKAyMuY/azV/Gkg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "20212b71-ab3f-4ee2-b646-52f5abe2184f",
+                            SecurityStamp = "fc72b376-4e13-44cd-a724-6098d58bdcda",
                             TwoFactorEnabled = false,
                             UserName = "Administrator"
                         });
@@ -416,9 +419,6 @@ namespace Serenity_Security.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("boolean");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AssetId");
@@ -430,22 +430,19 @@ namespace Serenity_Security.Migrations
                         {
                             Id = 1,
                             AssetId = 1,
-                            CreatedAt = new DateTime(2024, 2, 1, 9, 30, 12, 0, DateTimeKind.Unspecified),
-                            IsCompleted = false
+                            CreatedAt = new DateTime(2024, 2, 1, 9, 30, 12, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 2,
                             AssetId = 2,
-                            CreatedAt = new DateTime(2024, 2, 1, 10, 45, 22, 0, DateTimeKind.Unspecified),
-                            IsCompleted = false
+                            CreatedAt = new DateTime(2024, 2, 1, 10, 45, 22, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 3,
                             AssetId = 3,
-                            CreatedAt = new DateTime(2024, 2, 1, 11, 15, 33, 0, DateTimeKind.Unspecified),
-                            IsCompleted = false
+                            CreatedAt = new DateTime(2024, 2, 1, 11, 15, 33, 0, DateTimeKind.Unspecified)
                         });
                 });
 
