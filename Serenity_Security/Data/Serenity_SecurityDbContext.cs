@@ -234,15 +234,16 @@ public class Serenity_SecurityDbContext : IdentityDbContext<IdentityUser>
 
         modelBuilder
             .Entity<Asset>()
-            .HasOne(a => a.SystemType)
-            .WithMany()
-            .HasForeignKey(a => a.SystemTypeId);
-
-        modelBuilder
-            .Entity<Asset>()
             .HasOne(a => a.User)
             .WithMany(up => up.Assets)
             .HasForeignKey(a => a.UserId);
+
+        modelBuilder
+            .Entity<Asset>()
+            .HasOne(a => a.SystemType)
+            .WithMany(st => st.Assets) // Make sure SystemType has Assets collection
+            .HasForeignKey(a => a.SystemTypeId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder
             .Entity<Report>()

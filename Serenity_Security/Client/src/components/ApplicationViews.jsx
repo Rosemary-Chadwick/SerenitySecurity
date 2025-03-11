@@ -7,6 +7,7 @@ import { AssetDetails } from "./assets/AssetDetails";
 import { AssetForm } from "./assets/AssetCreateUpdateForm";
 import { ReportDetails } from "./reports/ReportDetails";
 import { VulnerabilityDetails } from "./vulnerabilities/VulnerabilityDetails";
+import { RemediationDetails } from "./remediations/RemediationDetails";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -71,6 +72,14 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
             </AuthorizedRoute>
           }
         />
+        <Route
+          path="remediation/:id"
+          element={
+            <AuthorizedRoute loggedInUser={loggedInUser}>
+              <RemediationDetails />
+            </AuthorizedRoute>
+          }
+          />
         
         <Route
           path="login"

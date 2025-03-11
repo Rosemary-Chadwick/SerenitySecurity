@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { deleteAsset, getAssetById } from "../../managers/assetManager";
+import { scanAssetForVulnerabilities } from "../../managers/vulnerabilityManager";
 
 export const AssetDetails = () => {
   const [asset, setAsset] = useState(null);
@@ -10,6 +11,7 @@ export const AssetDetails = () => {
   const [filterType, setFilterType] = useState("recent"); // recent is default : !completed
   const { id } = useParams();
   const navigate = useNavigate();
+  const [scanning, setScanning] = useState(false);
 
   useEffect(() => { // this one sets all the data in state
     setIsLoading(true);
@@ -59,6 +61,20 @@ export const AssetDetails = () => {
     }
   };
 
+  const handleScan = () => {
+    setScanning(true);
+    scanAssetForVulnerabilities(asset.id)
+      .then((data) => {
+        setScanning(false);
+        // Navigate to the new report
+        navigate(`/report/${data.reportId}`);
+      })
+      .catch((err) => {
+        setScanning(false);
+        setError("Failed to scan for vulnerabilities: " + err.message);
+      });
+  };
+
   if (isLoading) {
     return <div>Loading asset details...</div>;
   }
@@ -100,6 +116,24 @@ export const AssetDetails = () => {
         <Link to={`/assets/edit/${asset.id}`} className="btn btn-primary me-2">
           Update Asset
         </Link>
+        <button 
+          className="btn btn-primary" 
+          onClick={handleScan}
+          disabled={scanning}
+        >
+          {scanning ? "Scanning..." : "Scan for Vulnerabilities"}
+        </button>
+        <button 
+  className="btn btn-secondary" 
+  onClick={() => {
+    fetch('/api/vulnerability/test-connection')
+      .then(res => res.json())
+      .then(data => console.log('API test result:', data))
+      .catch(err => console.error('API test error:', err));
+  }}
+>
+  Test NVD API
+</button>
         <button 
           onClick={handleDelete}
           className="btn btn-danger"
