@@ -381,6 +381,7 @@ export const RemediationDetails = () => {
   if (!remediation) {
     return <div className="container mt-4">Remediation not found</div>;
   }
+  
 
   return (
     <div className="container mt-4">
