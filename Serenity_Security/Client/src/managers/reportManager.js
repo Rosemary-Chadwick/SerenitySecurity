@@ -16,3 +16,13 @@ export const getReportById = (id) => {
     }
   });
 };
+export const deleteReport = (id) => {
+  return fetch(`/api/report/${id}`, {
+    method: "DELETE",
+  }).then((res) => {
+    if (!res.ok) {
+      throw new Error("Failed to delete report");
+    }
+    return res;
+  });
+};

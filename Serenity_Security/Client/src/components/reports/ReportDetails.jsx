@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { getReportById } from "../../managers/reportManager";
+import { generateRemediationSteps } from "../../managers/vulnerabilityManager";
 
 export const ReportDetails = () => {
   const { id } = useParams();
@@ -13,8 +14,33 @@ export const ReportDetails = () => {
     getReportById(id)
       .then((data) => {
         setReport(data);
+      // Check if report has vulnerabilities that might need remediation enhancement
+      if (data.vulnerabilities && data.vulnerabilities.length > 0) {
+        // Process each vulnerability to ensure it has detailed remediation steps
+        const promises = data.vulnerabilities.map(vulnerability => {
+          // Check if this vulnerability might need enhanced remediation
+          if (!vulnerability.hasDetailedRemediation) {
+            // This is a flag you can add to your backend DTO to indicate if detailed remediation exists
+            return generateRemediationSteps(vulnerability.id, true)
+              .then(() => vulnerability)
+              .catch(err => {
+                console.error(`Error generating remediation for ${vulnerability.cveId}:`, err);
+                return vulnerability;
+              });
+          }
+          return Promise.resolve(vulnerability);
+        });
+        
+        // Wait for all remediation generations to complete
+        Promise.all(promises)
+          .then(() => {
+            console.log("All vulnerabilities have detailed remediation steps");
+            setLoading(false);
+          });
+      } else {
         setLoading(false);
-      })
+      }
+    })
       .catch((err) => {
         setError("Failed to load report data: " + err.message);
         setLoading(false);
@@ -85,7 +111,7 @@ export const ReportDetails = () => {
                     <td>{vulnerability.cvsScore.toFixed(1)}</td>
                     <td>
                       <Link
-                        to={`/vulnerability/${vulnerability.id}`}
+                        to={`/vulnerability/${vulnerability.id}?reportId=${report.id}`}
                         className="btn btn-info btn-sm"
                       >
                         View Details

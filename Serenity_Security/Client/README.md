@@ -15,5 +15,3 @@ To build for production:
 ```
 npm run build
 ```
-
-fgdfh

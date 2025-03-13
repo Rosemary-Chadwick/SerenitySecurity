@@ -136,4 +136,42 @@ public class ReportController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    [HttpDelete("{id}")]
+    [Authorize]
+    public IActionResult Delete(int id)
+    {
+        // Get the report with related data
+        var report = _dbContext
+            .Reports.Include(r => r.Asset)
+            .Include(r => r.ReportVulnerabilities)
+            .FirstOrDefault(r => r.Id == id);
+
+        if (report == null)
+        {
+            return NotFound();
+        }
+
+        // Get the current user's ID
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userProfile = _dbContext.UserProfiles.FirstOrDefault(up => up.IdentityUserId == userId);
+
+        // Verify that the current user owns the asset or is an admin
+        if (report.Asset.UserId != userProfile.Id && !userProfile.IsAdmin)
+        {
+            return Forbid();
+        }
+
+        // Delete associated report vulnerabilities
+        foreach (var rv in report.ReportVulnerabilities)
+        {
+            _dbContext.ReportVulnerabilities.Remove(rv);
+        }
+
+        // Delete the report
+        _dbContext.Reports.Remove(report);
+        _dbContext.SaveChanges();
+
+        return NoContent();
+    }
 }

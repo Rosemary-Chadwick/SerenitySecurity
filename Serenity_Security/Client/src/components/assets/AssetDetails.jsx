@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { deleteAsset, getAssetById } from "../../managers/assetManager";
+import { scanAssetForVulnerabilities } from "../../managers/vulnerabilityManager";
+import { deleteReport } from "../../managers/reportManager";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 
 export const AssetDetails = () => {
   const [asset, setAsset] = useState(null);
@@ -10,6 +13,10 @@ export const AssetDetails = () => {
   const [filterType, setFilterType] = useState("recent"); // recent is default : !completed
   const { id } = useParams();
   const navigate = useNavigate();
+  const [scanning, setScanning] = useState(false);
+  const [reportToDelete, setReportToDelete] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => { // this one sets all the data in state
     setIsLoading(true);
@@ -59,6 +66,56 @@ export const AssetDetails = () => {
     }
   };
 
+  const handleScan = () => {
+    setScanning(true);
+    scanAssetForVulnerabilities(asset.id)
+      .then((data) => {
+        setScanning(false);
+        // Navigate to the new report
+        navigate(`/report/${data.reportId}`);
+      })
+      .catch((err) => {
+        setScanning(false);
+        setError("Failed to scan for vulnerabilities: " + err.message);
+      });
+  };
+
+  const handleReportDeleteClick = (report) => {
+    setReportToDelete(report);
+    setShowDeleteModal(true);
+  };
+
+  const handleReportDeleteConfirm = () => {
+    if (!reportToDelete) return;
+
+    setIsDeleting(true);
+    deleteReport(reportToDelete.id)
+      .then(() => {
+        // Update the asset state to remove the deleted report
+        const updatedReports = asset.reports.filter(r => r.id !== reportToDelete.id);
+        setAsset({
+          ...asset,
+          reports: updatedReports
+        });
+        setFilteredReports(updatedReports);
+        setShowDeleteModal(false);
+        setReportToDelete(null);
+        setIsDeleting(false);
+      })
+      .catch((err) => {
+        setError(`Failed to delete report: ${err.message}`);
+        setShowDeleteModal(false);
+        setIsDeleting(false);
+      });
+  };
+
+  const toggleDeleteModal = () => {
+    setShowDeleteModal(!showDeleteModal);
+    if (!showDeleteModal) {
+      setReportToDelete(null);
+    }
+  };
+
   if (isLoading) {
     return <div>Loading asset details...</div>;
   }
@@ -101,6 +158,24 @@ export const AssetDetails = () => {
           Update Asset
         </Link>
         <button 
+          className="btn btn-primary" 
+          onClick={handleScan}
+          disabled={scanning}
+        >
+          {scanning ? "Scanning..." : "Scan for Vulnerabilities"}
+        </button>
+                    {/* <button 
+              className="btn btn-secondary" 
+              onClick={() => {
+                fetch('/api/vulnerability/test-connection')
+                  .then(res => res.json())
+                  .then(data => console.log('API test result:', data))
+                  .catch(err => console.error('API test error:', err));
+              }}
+            >
+              Test NVD API
+            </button> */}
+        <button 
           onClick={handleDelete}
           className="btn btn-danger"
         >
@@ -140,6 +215,12 @@ export const AssetDetails = () => {
                       <Link to={`/report/${report.id}`} className="btn btn-info btn-sm">
                         View Details
                       </Link>
+                      <button 
+                        className="btn btn-danger btn-sm" 
+                        onClick={() => handleReportDeleteClick(report)}
+                      >
+                        Delete Report
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -150,6 +231,31 @@ export const AssetDetails = () => {
           )}
         </div>
       </div>
+
+      <Modal isOpen={showDeleteModal} toggle={toggleDeleteModal}>
+        <ModalHeader toggle={toggleDeleteModal}>Confirm Report Deletion</ModalHeader>
+        <ModalBody>
+          <div className="alert alert-danger">
+            <p><strong>Warning:</strong> This action cannot be undone.</p>
+            <p>Deleting this report will permanently remove:</p>
+            <ul>
+              <li>The vulnerability scan report from {reportToDelete ? formatDate(reportToDelete.createdAt) : ''}</li>
+              <li>All detected vulnerabilities associated with this report</li>
+              <li>Any remediation progress for these vulnerabilities</li>
+            </ul>
+            <p>Are you sure you want to delete this report?</p>
+          </div>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="secondary" onClick={toggleDeleteModal} disabled={isDeleting}>
+            Cancel
+          </Button>
+          <Button color="danger" onClick={handleReportDeleteConfirm} disabled={isDeleting}>
+            {isDeleting ? "Deleting..." : "Delete Report"}
+          </Button>
+        </ModalFooter>
+      </Modal>
+
     </div>
   );
 };
