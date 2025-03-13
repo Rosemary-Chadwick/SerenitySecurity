@@ -8,6 +8,8 @@ import { AssetForm } from "./assets/AssetCreateUpdateForm";
 import { ReportDetails } from "./reports/ReportDetails";
 import { VulnerabilityDetails } from "./vulnerabilities/VulnerabilityDetails";
 import { RemediationDetails } from "./remediations/RemediationDetails";
+import { UserProfileDetails } from "./users/UserProfileDetails";
+import { UserProfileEdit } from "./users/UserProfileEdit";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -80,6 +82,22 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
             </AuthorizedRoute>
           }
           />
+                  <Route
+          path="profile"
+          element={
+            <AuthorizedRoute loggedInUser={loggedInUser}>
+              <UserProfileDetails setLoggedInUser={setLoggedInUser} />
+            </AuthorizedRoute>
+          }
+        />
+        <Route
+          path="profile/edit"
+          element={
+            <AuthorizedRoute loggedInUser={loggedInUser}>
+              <UserProfileEdit />
+            </AuthorizedRoute>
+          }
+        />
         
         <Route
           path="login"

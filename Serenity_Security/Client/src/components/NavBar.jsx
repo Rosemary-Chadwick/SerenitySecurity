@@ -40,6 +40,11 @@ export default function NavBar({ loggedInUser, setLoggedInUser }) {
                     </NavLink>
                   </NavItem>
                 )}
+                <NavItem>
+                  <NavLink tag={RRNavLink} to="/profile">
+                    My Profile
+                  </NavLink>
+                </NavItem>
               </Nav>
             </Collapse>
             <Button
