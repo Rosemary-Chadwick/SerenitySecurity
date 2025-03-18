@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link, useLocation } from "react-router-dom";
 import { getRemediationById, toggleRemediationItem } from "../../managers/remediationManager";
+import { Card, CardBody, CardHeader, CardTitle, Button } from "reactstrap";
+import { useTheme } from '../theme/ThemeContext';
 
 export const RemediationDetails = () => {
   const { id } = useParams();
@@ -12,10 +14,16 @@ export const RemediationDetails = () => {
   const [updating, setUpdating] = useState(false);
   const [remediationType, setRemediationType] = useState("generic");
   const [osType, setOsType] = useState("generic");
+  const { colors } = useTheme();
 
   const getReportId = () => {
     const searchParams = new URLSearchParams(location.search);
     return searchParams.get('reportId');
+  };
+
+  const getVulnerabilityId = () => {
+    const searchParams = new URLSearchParams(location.search);
+    return searchParams.get('vulnerabilityId');
   };
 
   useEffect(() => {
@@ -105,6 +113,7 @@ export const RemediationDetails = () => {
     
     return "generic";
   };
+
   const handleToggleCompletion = (isCompleted) => {
     setUpdating(true);
     toggleRemediationItem(remediation.id, isCompleted)
@@ -122,11 +131,46 @@ export const RemediationDetails = () => {
   const renderRemediationGuide = () => {
     if (!remediation) return null;
     
+    // Guide layout container with styling for all guide types
+    const GuideContainer = ({ title, children }) => (
+      <div className="alert" style={{
+        backgroundColor: colors.isDarkMode ? '#264f78' : '#e3f2fd',
+        color: colors.cardText,
+        borderColor: colors.isDarkMode ? '#90caf9' : '#1976d2',
+        borderRadius: '0.25rem',
+        padding: '1.25rem'
+      }}>
+        <h5 className="alert-heading" style={{ 
+          fontWeight: 'bold', 
+          marginBottom: '1rem',
+          color: colors.isDarkMode ? colors.secondary : colors.primary 
+        }}>
+          {title}
+        </h5>
+        {children}
+      </div>
+    );
+    
+    // Code block styling for verification steps
+    const CodeBlock = ({ children }) => (
+      <div className="card mt-3 mb-3">
+        <div className="card-body" style={{
+          backgroundColor: colors.isDarkMode ? '#2d3748' : '#f8f9fa',
+          color: colors.isDarkMode ? '#f7fafc' : '#1a202c',
+          padding: '1rem',
+          borderRadius: '0.25rem',
+          fontFamily: 'monospace',
+          overflowX: 'auto'
+        }}>
+          <pre className="mb-0" style={{ whiteSpace: 'pre-wrap' }}>{children}</pre>
+        </div>
+      </div>
+    );
+    
     switch (remediationType) {
       case "commandInjection":
         return (
-          <div className="alert alert-info">
-            <h5 className="alert-heading">Command Injection Remediation</h5>
+          <GuideContainer title="Command Injection Remediation">
             <p>Address command injection vulnerabilities with these steps:</p>
             
             <ol className="mt-3">
@@ -153,13 +197,12 @@ export const RemediationDetails = () => {
             </ol>
             
             {renderOsSpecificSteps()}
-          </div>
+          </GuideContainer>
         );
       
       case "memoryCorruption":
         return (
-          <div className="alert alert-info">
-            <h5 className="alert-heading">Memory Corruption Remediation</h5>
+          <GuideContainer title="Memory Corruption Remediation">
             <p>Fix memory corruption issues with these steps:</p>
             
             <ol className="mt-3">
@@ -184,13 +227,12 @@ export const RemediationDetails = () => {
             </ol>
             
             {renderOsSpecificSteps()}
-          </div>
+          </GuideContainer>
         );
       
       case "accessControl":
         return (
-          <div className="alert alert-info">
-            <h5 className="alert-heading">Access Control Remediation</h5>
+          <GuideContainer title="Access Control Remediation">
             <p>Address privilege and access control issues with these steps:</p>
             
             <ol className="mt-3">
@@ -214,13 +256,12 @@ export const RemediationDetails = () => {
             </ol>
             
             {renderOsSpecificSteps()}
-          </div>
+          </GuideContainer>
         );
       
       case "networkSecurity":
         return (
-          <div className="alert alert-info">
-            <h5 className="alert-heading">Network Security Remediation</h5>
+          <GuideContainer title="Network Security Remediation">
             <p>Address network-related vulnerabilities with these steps:</p>
             
             <ol className="mt-3">
@@ -245,14 +286,13 @@ export const RemediationDetails = () => {
             </ol>
             
             {renderOsSpecificSteps()}
-          </div>
+          </GuideContainer>
         );
       
       default:
         // Fall back to the generic guide but with dynamic content
         return (
-          <div className="alert alert-info">
-            <h5 className="alert-heading">Remediation Instructions</h5>
+          <GuideContainer title="Remediation Instructions">
             <p>Below are remediation steps for this vulnerability:</p>
             
             <ol className="mt-3">
@@ -265,13 +305,7 @@ export const RemediationDetails = () => {
               
               <li><strong>Verify Resolution</strong>
                 <p>After applying updates, verify the vulnerability has been remediated using the steps below.</p>
-                {remediation.verificationSteps && 
-                  <div className="card mt-2 mb-3">
-                    <div className="card-body bg-light">
-                      <pre className="mb-0">{remediation.verificationSteps}</pre>
-                    </div>
-                  </div>
-                }
+                {remediation.verificationSteps && <CodeBlock>{remediation.verificationSteps}</CodeBlock>}
               </li>
               
               <li><strong>Document Actions</strong>
@@ -280,91 +314,99 @@ export const RemediationDetails = () => {
             </ol>
             
             {renderOsSpecificSteps()}
-          </div>
+          </GuideContainer>
         );
     }
   };
 
-  // Render OS-specific guidance
+  // Render OS-specific guidance with styled code blocks
   const renderOsSpecificSteps = () => {
     if (!remediation) return null;
+    
+    // Code block styling consistent with other blocks
+    const CodeBlock = ({ children }) => (
+      <div className="card">
+        <div className="card-body" style={{
+          backgroundColor: colors.isDarkMode ? '#2d3748' : '#f8f9fa',
+          color: colors.isDarkMode ? '#f7fafc' : '#1a202c',
+          padding: '1rem',
+          borderRadius: '0.25rem',
+          fontFamily: 'monospace',
+          overflowX: 'auto'
+        }}>
+          <pre className="mb-0" style={{ whiteSpace: 'pre-wrap' }}>{children}</pre>
+        </div>
+      </div>
+    );
     
     switch (osType) {
       case "linux":
         return (
           <div className="mt-4">
-            <h6>Linux-Specific Instructions:</h6>
-            <div className="card">
-              <div className="card-body bg-light">
-                <pre className="mb-0">
-                  # Update package information
-                  sudo apt update
+            <h6 style={{ color: colors.isDarkMode ? colors.secondary : colors.primary }}>
+              Linux-Specific Instructions:
+            </h6>
+            <CodeBlock>
+{`# Update package information
+sudo apt update
 
-                  # Apply security updates
-                  sudo apt upgrade -y
+# Apply security updates
+sudo apt upgrade -y
 
-                  # Check for vulnerable packages
-                  dpkg -l | grep [package-name]
+# Check for vulnerable packages
+dpkg -l | grep [package-name]
 
-                  # Verify system security
-                  {remediation.verificationSteps || "# Run system-specific verification commands"}
-                </pre>
-              </div>
-            </div>
+# Verify system security
+${remediation.verificationSteps || "# Run system-specific verification commands"}`}
+            </CodeBlock>
           </div>
         );
       
       case "windows":
         return (
           <div className="mt-4">
-            <h6>Windows-Specific Instructions:</h6>
-            <div className="card">
-              <div className="card-body bg-light">
-                <pre className="mb-0">
-                  # Check for installed updates
-                  Get-Hotfix
+            <h6 style={{ color: colors.isDarkMode ? colors.secondary : colors.primary }}>
+              Windows-Specific Instructions:
+            </h6>
+            <CodeBlock>
+{`# Check for installed updates
+Get-Hotfix
 
-                  # Verify specific security patch
-                  Get-Hotfix -Id "KB*****"
+# Verify specific security patch
+Get-Hotfix -Id "KB*****"
 
-                  # Check system security configuration
-                  {remediation.verificationSteps || "# Run system-specific verification commands"}
-                </pre>
-              </div>
-            </div>
+# Check system security configuration
+${remediation.verificationSteps || "# Run system-specific verification commands"}`}
+            </CodeBlock>
           </div>
         );
       
       case "network":
         return (
           <div className="mt-4">
-            <h6>Network Device Instructions:</h6>
-            <div className="card">
-              <div className="card-body bg-light">
-                <pre className="mb-0">
-                  # Check current firmware version
-                  show version
+            <h6 style={{ color: colors.isDarkMode ? colors.secondary : colors.primary }}>
+              Network Device Instructions:
+            </h6>
+            <CodeBlock>
+{`# Check current firmware version
+show version
 
-                  # Verify configuration
-                  show running-config
+# Verify configuration
+show running-config
 
-                  # Additional verification steps
-                  {remediation.verificationSteps || "# Run device-specific verification commands"}
-                </pre>
-              </div>
-            </div>
+# Additional verification steps
+${remediation.verificationSteps || "# Run device-specific verification commands"}`}
+            </CodeBlock>
           </div>
         );
       
       default:
         return remediation.verificationSteps ? (
           <div className="mt-4">
-            <h6>Verification Steps:</h6>
-            <div className="card">
-              <div className="card-body bg-light">
-                <pre className="mb-0">{remediation.verificationSteps}</pre>
-              </div>
-            </div>
+            <h6 style={{ color: colors.isDarkMode ? colors.secondary : colors.primary }}>
+              Verification Steps:
+            </h6>
+            <CodeBlock>{remediation.verificationSteps}</CodeBlock>
           </div>
         ) : null;
     }
@@ -384,37 +426,76 @@ export const RemediationDetails = () => {
 
   return (
     <div className="container mt-4">
+      {/* Page Header */}
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>Remediation Details</h2>
-        <div>
-          {/* Add a "Back to Report" button if we have a reportId 
-          {getReportId() && (
-            <button 
-              className="btn btn-secondary me-2"
-              onClick={() => navigate(`/report/${getReportId()}`)}
+        <h2 style={{ color: colors.colorbg }}>
+          Remediation Details
+        </h2>
+        <div className="d-flex gap-2">
+          {getVulnerabilityId() && (
+            <Link 
+              to={`/vulnerability/${getVulnerabilityId()}?reportId=${getReportId() || ''}`} 
+              style={{
+                backgroundColor: colors.buttonHighlight,
+                color: colors.primary,
+                padding: '0.375rem 0.75rem',
+                borderRadius: '0.25rem',
+                textDecoration: 'none',
+                display: 'inline-block',
+                fontWeight: 'bold',
+                border: 'none'
+              }}
             >
-              Back to Report
-            </button>
-          )}*/}
-          <Link 
-            to={`/vulnerability/${remediation?.vulnerabilityId}?reportId=${getReportId() || ''}`} 
-            className="btn btn-secondary"
-          >
-            Back to Vulnerability
-          </Link>
+              Back to Vulnerability
+            </Link>
+          )}
+          {!getVulnerabilityId() && (
+            <Button 
+              onClick={() => navigate(-1)}
+              style={{
+                backgroundColor: colors.buttonHighlight,
+                color: colors.primary,
+                border: 'none',
+                fontWeight: 'bold'
+              }}
+            >
+              Back to Vulnerability
+            </Button>
+          )}
         </div>
       </div>
 
-      <div className="card mb-4">
-        <div className="card-header">
-          <div className="d-flex justify-content-between align-items-center">
-            <h4 className="mb-0">Remediation Steps</h4>
-            <span className={`badge ${remediation.isCompleted ? 'bg-success' : 'bg-warning'}`}>
-              {remediation.isCompleted ? 'Completed' : 'Pending'}
-            </span>
-          </div>
-        </div>
-        <div className="card-body">
+      {/* Remediation Steps Card */}
+      <Card className="mb-4 shadow">
+        <CardHeader style={{ 
+          backgroundColor: colors.primary,
+          color: colors.secondary,
+          borderTopLeftRadius: 'inherit',
+          borderTopRightRadius: 'inherit',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <CardTitle tag="h5" className="mb-0">
+            Remediation Steps
+          </CardTitle>
+          <span style={{
+            display: 'inline-block',
+            padding: '0.25rem 0.75rem',
+            borderRadius: '0.25rem',
+            fontSize: '0.875rem',
+            fontWeight: 'bold',
+            backgroundColor: remediation.isCompleted ? '#5a9178' : '#d9b55a',
+            color: remediation.isCompleted ? 'white' : '#1b2a3c'
+          }}>
+            {remediation.isCompleted ? 'Completed' : 'Pending'}
+          </span>
+        </CardHeader>
+        
+        <CardBody style={{ 
+          backgroundColor: colors.cardBg,
+          color: colors.cardText 
+        }}>
           <div className="mb-4">
             <div className="form-check form-switch">
               <input
@@ -424,8 +505,9 @@ export const RemediationDetails = () => {
                 checked={remediation.isCompleted}
                 onChange={(e) => handleToggleCompletion(e.target.checked)}
                 disabled={updating}
+                style={{ cursor: 'pointer' }}
               />
-              <label className="form-check-label" htmlFor="status-toggle">
+              <label className="form-check-label" htmlFor="status-toggle" style={{ cursor: 'pointer' }}>
                 Mark as {remediation.isCompleted ? 'incomplete' : 'complete'}
               </label>
             </div>
@@ -458,8 +540,13 @@ export const RemediationDetails = () => {
               </div>
               <div className="col-md-9">
                 <div className="card">
-                  <div className="card-body bg-light">
-                    <pre className="mb-0">{remediation.verificationSteps}</pre>
+                  <div className="card-body" style={{
+                    backgroundColor: colors.isDarkMode ? '#2d3748' : '#f8f9fa',
+                    color: colors.isDarkMode ? '#f7fafc' : '#1a202c',
+                    fontFamily: 'monospace',
+                    overflowX: 'auto'
+                  }}>
+                    <pre className="mb-0" style={{ whiteSpace: 'pre-wrap' }}>{remediation.verificationSteps}</pre>
                   </div>
                 </div>
               </div>
@@ -480,23 +567,37 @@ export const RemediationDetails = () => {
               <strong>Related CVE:</strong>
             </div>
             <div className="col-md-9">
-              <Link to={`/vulnerability/${remediation.vulnerabilityId}`}>
+              <Link 
+                to={`/vulnerability/${remediation.vulnerabilityId}`}
+                style={{ color: colors.isDarkMode ? '#90caf9' : '#1976d2' }}
+              >
                 {remediation.vulnerabilityCveId}
               </Link>
             </div>
           </div>
-        </div>
-      </div>
+        </CardBody>
+      </Card>
 
-      <div className="card">
-        <div className="card-header">
-          <h4>Suggested Remediation Guide</h4>
-        </div>
-        <div className="card-body">
-          {/* Dynamic content based on vulnerability type */}
+      {/* Suggested Remediation Guide Card */}
+      <Card className="shadow">
+        <CardHeader style={{ 
+          backgroundColor: colors.primary,
+          color: colors.secondary,
+          borderTopLeftRadius: 'inherit',
+          borderTopRightRadius: 'inherit' 
+        }}>
+          <CardTitle tag="h5" className="mb-0">
+            Suggested Remediation Guide
+          </CardTitle>
+        </CardHeader>
+        
+        <CardBody style={{ 
+          backgroundColor: colors.cardBg,
+          color: colors.cardText 
+        }}>
           {renderRemediationGuide()}
-        </div>
-      </div>
+        </CardBody>
+      </Card>
     </div>
   );
 };

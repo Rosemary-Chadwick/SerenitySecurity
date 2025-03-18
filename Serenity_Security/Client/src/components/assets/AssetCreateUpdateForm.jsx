@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { createAsset, getAssetById, updateAsset } from '../../managers/assetManager';
 import { getAllSystemTypes } from '../../managers/systemTypeManager';
+import { useTheme } from '../theme/ThemeContext'; 
+import { Button, Card, CardBody, CardHeader, CardTitle, FormGroup, Label, Input } from 'reactstrap';
 
 export const AssetForm = () => {
   // Get the id parameter from the URL if it exists
   const { id } = useParams();
   const navigate = useNavigate();
+  const { colors } = useTheme();
   
   // Determine if this is an edit (id exists) or create (no id) operation
   const isEditMode = !!id;
@@ -101,96 +104,137 @@ export const AssetForm = () => {
   }
   
   return (
-    <div className="container mt-4">
-      <h2>{isEditMode ? 'Edit Asset' : 'Create New Asset'}</h2>
-      
-      {error && <div className="alert alert-danger">{error}</div>}
-      
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="systemName" className="form-label">System Name</label>
-          <input
-            type="text"
-            className="form-control"
-            id="systemName"
-            name="systemName"
-            value={asset.systemName}
-            onChange={handleInputChange}
-            required
-          />
+    <div className="container mt-5">
+      <div className="row justify-content-center">
+        <div className="col-md-7">
+          <Card className="mb-4 shadow">
+          <CardHeader style={{ 
+              backgroundColor: colors.primary,
+              color: colors.secondary,
+              borderTopLeftRadius: 'inherit',
+              borderTopRightRadius: 'inherit' 
+            }}>
+              <CardTitle tag="h5" className="mb-0 text-center">
+                {isEditMode ? 'Update Asset' : 'Create New Asset'}
+              </CardTitle>
+            </CardHeader>
+            
+            <CardBody style={{ 
+              backgroundColor: colors.cardBg,
+              color: colors.cardText 
+            }}>
+              {error && <div className="alert alert-danger">{error}</div>}
+              
+              <form onSubmit={handleSubmit}>
+                <FormGroup>
+                  <Label htmlFor="systemName">System Name</Label>
+                  <Input
+                    type="text"
+                    id="systemName"
+                    name="systemName"
+                    value={asset.systemName}
+                    onChange={handleInputChange}
+                    required
+                    style={{
+                      backgroundColor: 'transparent',
+                      color: colors.cardText,
+                      borderColor: colors.cardText
+                    }}
+                  />
+                </FormGroup>
+                
+                <FormGroup>
+                  <Label htmlFor="ipAddress">IP Address</Label>
+                  <Input
+                    type="text"
+                    id="ipAddress"
+                    name="ipAddress"
+                    value={asset.ipAddress}
+                    onChange={handleInputChange}
+                    required
+                    style={{
+                      backgroundColor: 'transparent',
+                      color: colors.cardText,
+                      borderColor: colors.cardText
+                    }}
+                  />
+                </FormGroup>
+                
+                <FormGroup>
+                  <Label htmlFor="osVersion">OS Version</Label>
+                  <Input
+                    type="text"
+                    id="osVersion"
+                    name="osVersion"
+                    value={asset.osVersion}
+                    onChange={handleInputChange}
+                    required
+                    style={{
+                      backgroundColor: 'transparent',
+                      color: colors.cardText,
+                      borderColor: colors.cardText
+                    }}
+                  />
+                </FormGroup>
+                
+                <FormGroup>
+                  <Label htmlFor="systemTypeId">System Type</Label>
+                  <Input
+                    type="select"
+                    id="systemTypeId"
+                    name="systemTypeId"
+                    value={asset.systemTypeId}
+                    onChange={handleInputChange}
+                    required
+                    style={{
+                      backgroundColor: 'transparent',
+                      color: colors.cardText,
+                      borderColor: colors.cardText
+                    }}
+                  >
+                    <option value="">Select a system type</option>
+                    {systemTypes.map(type => (
+                      <option key={type.id} value={type.id}>
+                        {type.name}
+                      </option>
+                    ))}
+                  </Input>
+                </FormGroup>
+                
+                <FormGroup check className="mb-3">
+                  <Label check>
+                    <Input
+                      type="checkbox"
+                      name="isActive"
+                      checked={asset.isActive}
+                      onChange={handleInputChange}
+                    />
+                    Active
+                  </Label>
+                </FormGroup>
+                
+                <div className="d-flex gap-2 justify-content-between mt-4">
+                  <Button type="submit" disabled={loading} style={{
+                    backgroundColor: colors.buttonHighlight,
+                    color: colors.primary,
+                    border: 'none'
+                  }}>
+                    {loading ? 'Saving...' : 'Save Asset'}
+                  </Button>
+                  
+                  <Button type="button" onClick={() => navigate(-1)} disabled={loading} style={{
+                    backgroundColor: 'transparent',
+                    color: colors.cardText,
+                    border: `1px solid ${colors.cardText}`
+                  }}>
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            </CardBody>
+          </Card>
         </div>
-        
-        <div className="mb-3">
-          <label htmlFor="ipAddress" className="form-label">IP Address</label>
-          <input
-            type="text"
-            className="form-control"
-            id="ipAddress"
-            name="ipAddress"
-            value={asset.ipAddress}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        
-        <div className="mb-3">
-          <label htmlFor="osVersion" className="form-label">OS Version</label>
-          <input
-            type="text"
-            className="form-control"
-            id="osVersion"
-            name="osVersion"
-            value={asset.osVersion}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        
-        <div className="mb-3">
-          <label htmlFor="systemTypeId" className="form-label">System Type</label>
-          <select
-            className="form-select"
-            id="systemTypeId"
-            name="systemTypeId"
-            value={asset.systemTypeId}
-            onChange={handleInputChange}
-            required
-          >
-            <option value="">Select a system type</option>
-            {systemTypes.map(type => (
-              <option key={type.id} value={type.id}>
-                {type.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        
-        <div className="mb-3 form-check">
-          <input
-            type="checkbox"
-            className="form-check-input"
-            id="isActive"
-            name="isActive"
-            checked={asset.isActive}
-            onChange={handleInputChange}
-          />
-          <label className="form-check-label" htmlFor="isActive">Active</label>
-        </div>
-        
-        <div className="d-flex gap-2">
-          <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? 'Saving...' : 'Save Asset'}
-          </button>
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={() => navigate(-1)}
-            disabled={loading}
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   );
 };

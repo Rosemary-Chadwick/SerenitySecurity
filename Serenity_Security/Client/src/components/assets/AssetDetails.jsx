@@ -3,7 +3,9 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { deleteAsset, getAssetById } from "../../managers/assetManager";
 import { scanAssetForVulnerabilities } from "../../managers/vulnerabilityManager";
 import { deleteReport } from "../../managers/reportManager";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import {  Button, Card, CardBody, CardHeader, CardTitle, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { useTheme } from '../theme/ThemeContext'; 
+
 
 export const AssetDetails = () => {
   const [asset, setAsset] = useState(null);
@@ -17,6 +19,7 @@ export const AssetDetails = () => {
   const [reportToDelete, setReportToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const { colors } = useTheme();
 
   useEffect(() => { // this one sets all the data in state
     setIsLoading(true);
@@ -128,113 +131,211 @@ export const AssetDetails = () => {
     return <div>Asset not found</div>;
   }
 
+  const TrashIcon = () => (
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      width="30"  // Increased from 16
+      height="30" // Increased from 16
+      fill="#a83246" 
+      viewBox="0 0 16 16"
+    >
+      <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+      <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+    </svg>
+  );
   return (
     <div className="container mt-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>{asset.systemName}</h2>
-        <button 
+        <h2 style={{ color: colors.cardBg }}>
+          {asset.systemName}
+        </h2>
+        <Button 
           onClick={() => navigate("/assets")}
-          className="btn btn-secondary"
+          style={{
+            backgroundColor: colors.buttonHighlight, // Yellow background
+            color: colors.primary, // Navy text
+            border: 'none',
+            fontWeight: 'bold'
+          }}
         >
           Back to Assets
-        </button>
+        </Button>
       </div>
 
-      <div className="card mb-4">
-        <div className="card-header">
-          <h4>Asset Information</h4>
-        </div>
-        <div className="card-body">
+      {/* Asset Information Card */}
+      <Card className="mb-4 shadow">
+        <CardHeader style={{ 
+          backgroundColor: colors.primary,
+          color: colors.secondary,
+          borderTopLeftRadius: 'inherit',
+          borderTopRightRadius: 'inherit' 
+        }}>
+          <CardTitle tag="h5" className="mb-0">
+            Asset Information
+          </CardTitle>
+        </CardHeader>
+        
+        <CardBody style={{ 
+          backgroundColor: colors.cardBg,
+          color: colors.cardText 
+        }}>
           <p><strong>IP Address:</strong> {asset.ipAddress}</p>
           <p><strong>OS Version:</strong> {asset.osVersion}</p>
           <p><strong>System Type:</strong> {asset.systemTypeName}</p>
           <p><strong>Status:</strong> {asset.isActive ? "Active" : "Inactive"}</p>
           <p><strong>Created:</strong> {formatDate(asset.createdAt)}</p>
-        </div>
-      </div>
+        </CardBody>
+      </Card>
 
-      <div className="d-flex mb-3">
-        <Link to={`/assets/edit/${asset.id}`} className="btn btn-primary me-2">
+      {/* Action Buttons */}
+      <div className="d-flex mb-3 gap-2">
+        <Link to={`/assets/edit/${asset.id}`} style={{
+          backgroundColor: colors.buttonHighlight,
+          color: colors.primary,
+          padding: '0.375rem 0.75rem',
+          borderRadius: '0.25rem',
+          textDecoration: 'none',
+          display: 'inline-block'
+        }}>
           Update Asset
         </Link>
-        <button 
-          className="btn btn-primary" 
+        
+        <Button 
           onClick={handleScan}
           disabled={scanning}
+          style={{
+            backgroundColor: colors.buttonHighlight,
+            color: colors.primary,
+            border: 'none'
+          }}
         >
           {scanning ? "Scanning..." : "Scan for Vulnerabilities"}
-        </button>
-                    {/* <button 
-              className="btn btn-secondary" 
-              onClick={() => {
-                fetch('/api/vulnerability/test-connection')
-                  .then(res => res.json())
-                  .then(data => console.log('API test result:', data))
-                  .catch(err => console.error('API test error:', err));
-              }}
-            >
-              Test NVD API
-            </button> */}
-        <button 
-          onClick={handleDelete}
-          className="btn btn-danger"
-        >
-          Delete Asset
-        </button>
+        </Button>
+        
+        <Button 
+  onClick={handleDelete}
+  style={{
+    backgroundColor: colors.buttonHighlight, // Yellow background
+    border: 'none',
+    padding: '0.5rem',  // Slightly more padding
+    borderRadius: '0.25rem'
+  }}
+>
+          <TrashIcon />
+        </Button>
       </div>
       
-      <div className="card">
-        <div className="card-header d-flex justify-content-between align-items-center">
-          <h4>Report History</h4>
-          <select 
-            value={filterType} 
-            onChange={handleFilterChange}
-            className="form-select w-auto"
-          >
-            <option value="recent">Most Recent</option>
-            <option value="inProgress">In Progress</option>
-            <option value="completed">Completed</option>
-          </select>
-        </div>
-        <div className="card-body">
-          {filteredReports.length > 0 ? (
-            <table className="table table-striped">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredReports.map(report => (
-                  <tr key={report.id}>
-                    <td>{formatDate(report.createdAt)}</td>
-                    <td>{report.isCompleted ? "Completed" : "In Progress"}</td>
-                    <td>
-                      <Link to={`/report/${report.id}`} className="btn btn-info btn-sm">
-                        View Details
-                      </Link>
-                      <button 
-                        className="btn btn-danger btn-sm" 
-                        onClick={() => handleReportDeleteClick(report)}
-                      >
-                        Delete Report
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p>No reports match your filter. {asset.reports.length === 0 ? "Create a new report to check for vulnerabilities." : ""}</p>
-          )}
-        </div>
-      </div>
+      {/* Report History Card */}
+      <Card className="shadow">
+  <CardHeader style={{ 
+    backgroundColor: colors.primary,
+    color: colors.secondary,
+    borderTopLeftRadius: 'inherit',
+    borderTopRightRadius: 'inherit',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  }}>
+    <CardTitle tag="h5" className="mb-0">
+      Report History
+    </CardTitle>
+    <div style={{
+      backgroundColor: colors.primary, // Navy background for dropdown
+      borderRadius: '0.25rem',
+      padding: '0.25rem'
+    }}>
+      <select 
+        value={filterType} 
+        onChange={handleFilterChange}
+        className="form-select"
+        style={{
+          width: 'auto',
+          backgroundColor: colors.primary, // Navy background
+          color: colors.secondary, // Yellow text
+          borderColor: colors.secondary,
+          fontWeight: 'bold'
+        }}
+      >
+        <option value="recent">Most Recent</option>
+        <option value="inProgress">In Progress</option>
+        <option value="completed">Completed</option>
+      </select>
+    </div>
+  </CardHeader>
+  
+  <CardBody style={{ 
+    backgroundColor: colors.cardBg, // Using the theme's cardBg
+    color: colors.cardText 
+  }}>
+    {filteredReports.length > 0 ? (
+      <table className="table" style={{ 
+        color: colors.cardText,
+        backgroundColor: colors.cardBg // Using the cream color from the theme
+      }}>
+        <thead>
+          <tr style={{ 
+            backgroundColor: '#cad8e7', // The lighter navy color you specified
+            color: colors.primary  // Dark navy text
+          }}>
+            <th style={{ padding: '0.75rem' }}>Date</th>
+            <th style={{ padding: '0.75rem' }}>Status</th>
+            <th style={{ padding: '0.75rem' }}>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredReports.map(report => (
+            <tr key={report.id} style={{ borderColor: '#cad8e7' }}>
+              <td>{formatDate(report.createdAt)}</td>
+              <td>{report.isCompleted ? "Completed" : "In Progress"}</td>
+              <td>
+                <div className="d-flex gap-2">
+                  <Link to={`/report/${report.id}`} style={{
+                    backgroundColor: colors.primary,
+                    color: colors.secondary,
+                    padding: '0.25rem 0.5rem',
+                    borderRadius: '0.2rem',
+                    fontSize: '0.875rem',
+                    textDecoration: 'none',
+                    display: 'inline-block'
+                  }}>
+                    View Details
+                  </Link>
+                  
+                  <Button 
+                    onClick={() => handleReportDeleteClick(report)}
+                    style={{
+                      backgroundColor: colors.buttonHighlight, // Yellow background
+                      border: 'none',
+                      padding: '0.25rem 0.5rem',
+                      borderRadius: '0.25rem'
+                    }}
+                  >
+                    <TrashIcon />
+                  </Button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    ) : (
+      <p>No reports match your filter. {asset.reports.length === 0 ? "Create a new report to check for vulnerabilities." : ""}</p>
+    )}
+  </CardBody>
+</Card>
 
+      {/* Keep your existing Modal component with some theme styling */}
       <Modal isOpen={showDeleteModal} toggle={toggleDeleteModal}>
-        <ModalHeader toggle={toggleDeleteModal}>Confirm Report Deletion</ModalHeader>
-        <ModalBody>
+        <ModalHeader toggle={toggleDeleteModal} style={{
+          backgroundColor: colors.primary,
+          color: colors.secondary
+        }}>
+          Confirm Report Deletion
+        </ModalHeader>
+        <ModalBody style={{
+          backgroundColor: colors.cardBg,
+          color: colors.cardText
+        }}>
           <div className="alert alert-danger">
             <p><strong>Warning:</strong> This action cannot be undone.</p>
             <p>Deleting this report will permanently remove:</p>
@@ -246,8 +347,15 @@ export const AssetDetails = () => {
             <p>Are you sure you want to delete this report?</p>
           </div>
         </ModalBody>
-        <ModalFooter>
-          <Button color="secondary" onClick={toggleDeleteModal} disabled={isDeleting}>
+        <ModalFooter style={{
+          backgroundColor: colors.cardBg,
+          color: colors.cardText
+        }}>
+          <Button color="secondary" onClick={toggleDeleteModal} disabled={isDeleting} style={{
+            backgroundColor: 'transparent',
+            color: colors.cardText,
+            border: `1px solid ${colors.cardText}`
+          }}>
             Cancel
           </Button>
           <Button color="danger" onClick={handleReportDeleteConfirm} disabled={isDeleting}>
@@ -255,7 +363,6 @@ export const AssetDetails = () => {
           </Button>
         </ModalFooter>
       </Modal>
-
     </div>
   );
 };

@@ -70,7 +70,8 @@ export const AssetList = () => {
                 style={{
                   backgroundColor: colors.buttonHighlight,
                   borderColor: colors.buttonHighlight,
-                  color: colors.primary
+                  color: colors.primary,
+                  fontWeight: 'bold'
                 }}
                 tag={Link}
                 to="/assets/create"
