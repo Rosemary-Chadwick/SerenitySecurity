@@ -19,7 +19,7 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           index
           element={
             <AuthorizedRoute loggedInUser={loggedInUser}>
-             <h1>Welcome to Serenity Security</h1>
+             {/* <h1>Welcome to Serenity Security</h1> */}
               <AssetList />
             </AuthorizedRoute>
           }
