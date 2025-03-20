@@ -135,7 +135,7 @@ export const RemediationDetails = () => {
     const GuideContainer = ({ title, children }) => (
       <div className="alert" style={{
         backgroundColor: colors.isDarkMode ? '#264f78' : '#e3f2fd',
-        color: colors.cardText,
+        color: colors.primary,
         borderColor: colors.isDarkMode ? '#90caf9' : '#1976d2',
         borderRadius: '0.25rem',
         padding: '1.25rem'

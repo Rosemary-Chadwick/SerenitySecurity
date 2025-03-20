@@ -17,6 +17,8 @@ export const AssetDetails = () => {
   const navigate = useNavigate();
   const [scanning, setScanning] = useState(false);
   const [reportToDelete, setReportToDelete] = useState(null);
+  const [isDeletingAsset, setIsDeletingAsset] = useState(false);
+  const [showAssetDeleteModal, setShowAssetDeleteModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const { colors } = useTheme();
@@ -61,12 +63,7 @@ export const AssetDetails = () => {
   };
 
   const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete this asset?")) { //  and all its reports
-      deleteAsset(asset.id).then(() => {
-        window.alert("Asset successfully deleted!");
-        navigate('/');
-      });
-    }
+    setShowAssetDeleteModal(true);
   };
 
   const handleScan = () => {
@@ -80,6 +77,21 @@ export const AssetDetails = () => {
       .catch((err) => {
         setScanning(false);
         setError("Failed to scan for vulnerabilities: " + err.message);
+      });
+  };
+
+  const handleAssetDeleteConfirm = () => {
+    setIsDeletingAsset(true);
+    
+    deleteAsset(asset.id)
+      .then(() => {
+        setIsDeletingAsset(false);
+        setShowAssetDeleteModal(false);
+        navigate('/');
+      })
+      .catch((err) => {
+        setError(`Failed to delete asset: ${err.message}`);
+        setIsDeletingAsset(false);
       });
   };
 
@@ -117,6 +129,10 @@ export const AssetDetails = () => {
     if (!showDeleteModal) {
       setReportToDelete(null);
     }
+  };
+
+  const toggleAssetDeleteModal = () => {
+    setShowAssetDeleteModal(!showAssetDeleteModal);
   };
 
   if (isLoading) {
@@ -363,6 +379,56 @@ export const AssetDetails = () => {
           </Button>
         </ModalFooter>
       </Modal>
+      <Modal isOpen={showAssetDeleteModal} toggle={toggleAssetDeleteModal}>
+  <ModalHeader style={{ 
+    backgroundColor: colors.primary,
+    color: colors.secondary
+  }}>
+    Confirm Asset Deletion
+  </ModalHeader>
+  <ModalBody style={{
+    backgroundColor: colors.cardBg,
+    color: colors.cardText
+  }}>
+    <div className="alert alert-danger">
+      <p><strong>Warning:</strong> This action cannot be undone.</p>
+      <p>Deleting this asset will permanently remove:</p>
+      <ul>
+        <li>The asset "{asset.systemName}" and all its configuration data</li>
+        <li>All vulnerability scan reports for this asset</li>
+        <li>All remediation progress and history</li>
+      </ul>
+      <p>Are you sure you want to delete this asset?</p>
+    </div>
+  </ModalBody>
+  <ModalFooter style={{
+    backgroundColor: colors.cardBg,
+    color: colors.cardText
+  }}>
+    <Button 
+      onClick={toggleAssetDeleteModal} 
+      disabled={isDeletingAsset}
+      style={{
+        backgroundColor: 'transparent',
+        color: colors.cardText,
+        border: `1px solid ${colors.cardText}`
+      }}
+    >
+      Cancel
+    </Button>
+    <Button 
+      onClick={handleAssetDeleteConfirm} 
+      disabled={isDeletingAsset}
+      style={{
+        backgroundColor: '#dc3545',
+        color: 'white',
+        border: 'none'
+      }}
+    >
+      {isDeletingAsset ? "Deleting..." : "Delete Asset"}
+    </Button>
+  </ModalFooter>
+</Modal>
     </div>
   );
 };

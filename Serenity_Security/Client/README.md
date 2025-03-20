@@ -61,3 +61,93 @@ To change chart colors or styling, modify the relevant component's color constan
   // other dependencies
 }
 ```
+
+deletion uses a Reactstrap Modal component with custom styling
+
+External Libraries and Components Used in the Serenity Security Application
+Reactstrap Components
+Reactstrap provides React-based Bootstrap 4 components. The following components have been incorporated into the application:
+
+Modal Components
+
+Modal - Container for modal dialogs
+ModalHeader - Styled header section for modals
+ModalBody - Content area for modals
+ModalFooter - Footer section for modal action buttons
+Used for confirmation dialogs (report/asset deletion)
+
+Card Components
+
+Card - Main container for content sections
+CardHeader - Header section for cards
+CardBody - Content area for cards
+CardTitle - Styled title element for card headers
+Used throughout the application for organizing content
+
+Form Components
+
+Button - Styled button element
+Input - Form input element
+FormGroup - Container for form elements
+Label - Form field label
+FormFeedback - Validation feedback messages
+Used in login, registration, and asset forms
+
+React Router Components
+React Router is used for navigation and routing in the application:
+
+Routing Components
+
+Routes, Route - Define application routes
+Link - Navigation without page refresh
+useNavigate - Programmatic navigation hook
+useParams - Access URL parameters
+useLocation - Access query string parameters
+
+Bootstrap Styling Classes
+Bootstrap CSS classes are used extensively for styling:
+
+Layout
+
+Grid system (container, row, col-md-\*)
+Spacing utilities (mt-4, mb-3, p-2, etc.)
+Flex utilities (d-flex, justify-content-between, etc.)
+
+Components
+
+Alert styles (alert, alert-danger, alert-success, etc.)
+Table styles (table, table-striped)
+List groups (list-group, list-group-item)
+Progress bars (progress, progress-bar)
+Badges (badge, custom-styled badges)
+Form controls (form-check, form-switch, etc.)
+
+Recharts Library
+Recharts is used for data visualization:
+
+Chart Components
+
+PieChart, Pie, Cell - Building blocks for the donut chart
+ResponsiveContainer - Makes charts responsive
+Tooltip - Shows data on hover
+Legend - Chart legend
+Used for vulnerability severity distribution visualization
+
+SVG Icons
+The application uses SVG-based icons:
+
+Custom SVG Icons
+
+Trash icon for deletion actions
+Sun/Moon icons for theme toggle
+Used for intuitive visual cues in the UI
+
+Context API
+React's Context API is used for application-wide state management:
+
+Custom Contexts
+
+ThemeContext - Manages light/dark theme
+useTheme hook - Access theme properties across components
+
+These components and libraries work together to create a cohesive, responsive, and visually consistent security vulnerability management application with a custom theme system.

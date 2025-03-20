@@ -4,17 +4,21 @@ import { Card, CardBody, CardTitle, Button, CardHeader } from 'reactstrap';
 import { useTheme } from '../theme/ThemeContext';
 import VulnerabilityDonutChart from '../charts/VulnerabilityDonutChart';
 
-const AssetCard = ({ asset }) => {
+const AssetCard = ({ asset, vulnerabilityData }) => {
   const { colors } = useTheme();
+
+  console.log("Asset:", asset.systemName);
+  console.log("Vulnerability data for this asset:", vulnerabilityData);
   
-  // Mock data for the chart (replace with actual data from your API)
-  const vulnerabilityData = [
-    { name: 'High', value: asset.highVulnerabilities || 2, color: '#dc3545' },
-    { name: 'Medium', value: asset.mediumVulnerabilities || 4, color: '#ffc107' },
-    { name: 'Low', value: asset.lowVulnerabilities || 7, color: '#28a745' }
+  const chartData = [
+    { name: 'Critical', value: vulnerabilityData?.critical || 0, color: '#ff3333' },
+    { name: 'High', value: vulnerabilityData?.high || 0, color: '#a83246' },
+    { name: 'Medium', value: vulnerabilityData?.medium || 0, color: '#d9b55a' },
+    { name: 'Low', value: vulnerabilityData?.low || 0, color: '#5a9178' },
+    { name: 'Unknown', value: vulnerabilityData?.unknown || 0, color: '#808080' }
   ];
   
-  const totalVulnerabilities = vulnerabilityData.reduce((sum, item) => sum + item.value, 0);
+  const totalVulnerabilities = chartData.reduce((sum, item) => sum + item.value, 0);
   
   return (
     <Link 
@@ -72,38 +76,13 @@ const AssetCard = ({ asset }) => {
 
     <div className="ms-2 d-flex align-items-center" style={{ marginTop: '15px' }}>
       <VulnerabilityDonutChart 
-        data={vulnerabilityData} 
+        data={chartData} 
         total={totalVulnerabilities}
-        width={120}
-        height={155}
+        width={150}
+        height={185}
       />
     </div>
   </div>
-        
-        <div className="d-grid gap-2">
-          {/* <Button
-            tag={Link}
-            to={`/assets/${asset.id}`}
-            style={{
-              backgroundColor: colors.buttonHighlight,
-              borderColor: colors.buttonHighlight,
-              color: colors.primary
-            }}
-            size="sm"
-          >
-            View Details
-          </Button> */}
-          {/* <Button
-            tag={Link}
-            to={`/report/${asset.latestReportId || 0}`}
-            color="secondary"
-            outline
-            size="sm"
-            disabled={!asset.latestReportId}
-          >
-            Latest Report
-          </Button> */}
-        </div>
       </CardBody>
     </Card>
     </Link>

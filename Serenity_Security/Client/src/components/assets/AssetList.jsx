@@ -5,19 +5,31 @@ import { Container, Row, Col, Button, Card, CardBody, CardTitle } from "reactstr
 import { useTheme } from "../theme/ThemeContext";
 import AssetCard from "./AssetCard";
 import DashboardCharts from "../dashboard/DashboardCharts";
+import { getAssetVulnerabilityStats } from "../../managers/dashboardManager";
 
 export const AssetList = () => {
   const [assets, setAssets] = useState([]);
+  const [vulnerabilityData, setVulnerabilityData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { colors } = useTheme();
 
-  const fetchAssets = () => {
+  const fetchData = () => {
     setIsLoading(true);
-    getUserAssets()
-      .then((data) => {
-        setAssets(data);
+    
+    Promise.all([
+      getUserAssets(),
+      getAssetVulnerabilityStats()
+    ])
+      .then(([assetsData, vulnData]) => {
+        const vulnDataMap = {};
+        vulnData.forEach(item => {
+          vulnDataMap[item.name] = item;
+        });
+        
+        setAssets(assetsData);
+        setVulnerabilityData(vulnDataMap);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -27,7 +39,7 @@ export const AssetList = () => {
   };
 
   useEffect(() => {
-    fetchAssets();
+    fetchData();
   }, []);
 
   if (isLoading) {
@@ -113,13 +125,16 @@ export const AssetList = () => {
               </CardBody>
             </Card>
           ) : (
-            <Row>
-              {assets.map((asset) => (
-                <Col key={asset.id} lg={6} className="mb-4">
-                  <AssetCard asset={asset} />
-                </Col>
-              ))}
-            </Row>
+<Row>
+  {assets.map((asset) => (
+    <Col key={asset.id} lg={6} className="mb-4">
+      <AssetCard 
+        asset={asset} 
+        vulnerabilityData={vulnerabilityData[asset.systemName]} 
+      />
+    </Col>
+  ))}
+</Row>
           )}
         </Col>
         
