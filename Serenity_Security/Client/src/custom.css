@@ -1,0 +1,224 @@
+/* General styles */
+body {
+  min-height: 100vh;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Semi-transparent Card Styling */
+.asset-card {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.asset-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.card-header {
+  border-bottom: 3px solid #ffd365;
+}
+
+.card-title {
+  font-weight: 600;
+}
+
+/* Dashboard specific styles */
+.dashboard-header {
+  margin: 30px 0;
+}
+
+.stats-card {
+  padding: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-chart-container {
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+/* Status labels and indicators */
+.status-badge {
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.status-high {
+  background-color: rgba(220, 53, 69, 0.2);
+  color: #dc3545;
+}
+
+.status-medium {
+  background-color: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+}
+
+.status-low {
+  background-color: rgba(40, 167, 69, 0.2);
+  color: #28a745;
+}
+
+.status-fixed {
+  background-color: rgba(23, 162, 184, 0.2);
+  color: #17a2b8;
+}
+
+/* Animation for elements */
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Button styling */
+.btn-primary {
+  background-color: #1b2a3c;
+  border-color: #1b2a3c;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  background-color: #2c3e50;
+  border-color: #2c3e50;
+}
+
+.btn-secondary {
+  background-color: #ffd365;
+  border-color: #ffd365;
+  color: #1b2a3c;
+}
+
+.btn-secondary:hover, .btn-secondary:focus {
+  background-color: #ffbc1f;
+  border-color: #ffbc1f;
+  color: #1b2a3c;
+}
+
+.btn-highlight {
+  background-color: #ffd365 !important;
+  border-color: #ffd365 !important;
+  color: #1b2a3c !important;
+}
+
+.btn-highlight:hover, .btn-highlight:focus {
+  background-color: #ffbc1f !important;
+  border-color: #ffbc1f !important;
+  color: #1b2a3c !important;
+}
+  
+  /* Semi-transparent Card Styling */
+  .asset-card {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  
+  .asset-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+  
+  .card-header {
+    border-bottom: 3px solid #ffd365;
+  }
+  
+  .card-title {
+    font-weight: 600;
+  }
+  
+  /* Dashboard specific styles */
+  .dashboard-header {
+    margin: 30px 0;
+  }
+  
+  .stats-card {
+    padding: 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .dashboard-chart-container {
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  /* Status labels and indicators */
+  .status-badge {
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-weight: 500;
+    display: inline-block;
+  }
+  
+  .status-high {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+  }
+  
+  .status-medium {
+    background-color: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+  }
+  
+  .status-low {
+    background-color: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+  }
+  
+  .status-fixed {
+    background-color: rgba(23, 162, 184, 0.2);
+    color: #17a2b8;
+  }
+  
+  /* Animation for elements */
+  .fade-in {
+    animation: fadeIn 0.5s ease-in;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  /* Button styling */
+  .btn-primary {
+    background-color: #1b2a3c;
+    border-color: #1b2a3c;
+  }
+  
+  .btn-primary:hover, .btn-primary:focus {
+    background-color: #2c3e50;
+    border-color: #2c3e50;
+  }
+  
+  .btn-secondary {
+    background-color: #ffd365;
+    border-color: #ffd365;
+    color: #1b2a3c;
+  }
+  
+  .btn-secondary:hover, .btn-secondary:focus {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #1b2a3c;
+  }
+  

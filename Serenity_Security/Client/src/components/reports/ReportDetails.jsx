@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { getReportById } from "../../managers/reportManager";
 import { generateRemediationSteps } from "../../managers/vulnerabilityManager";
+import { Card, CardBody, CardHeader, CardTitle, Button } from "reactstrap";
+import { useTheme } from '../theme/ThemeContext';
 
 export const ReportDetails = () => {
   const { id } = useParams();
@@ -9,6 +11,7 @@ export const ReportDetails = () => {
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { colors } = useTheme();
 
   useEffect(() => {
     getReportById(id)
@@ -64,55 +67,134 @@ export const ReportDetails = () => {
     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
   };
 
+  const getSeverityColor = (severity) => {
+    // Convert to lowercase for case-insensitive comparison
+    const level = severity?.toLowerCase() || '';
+    
+    if (level.includes('high') || level.includes('critical'))
+      return { bg: '#a83246', text: 'white' }; // Muted red
+    
+    if (level.includes('medium'))
+      return { bg: '#d9b55a', text: '#1b2a3c' }; // Muted yellow with dark text
+    
+    if (level.includes('low'))
+      return { bg: '#5a9178', text: 'white' }; // Muted green
+    
+    // Default fallback
+    return { bg: '#6c757d', text: 'white' }; // Gray for unknown
+  };
+
   return (
     <div className="container mt-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>Vulnerability Report</h2>
-        <button 
-          className="btn btn-secondary" 
+        <h2 style={{ color: colors.cardBg }}>
+          Vulnerability Report
+        </h2>
+        <Button 
           onClick={() => navigate(`/assets/${report.asset.id}`)}
+          style={{
+            backgroundColor: colors.buttonHighlight, // Yellow background
+            color: colors.primary, // Navy text
+            border: 'none',
+            fontWeight: 'bold'
+          }}
         >
           Back to Asset
-        </button>
+        </Button>
       </div>
 
-      <div className="card mb-4">
-        <div className="card-header">
-          <h4>Report Details</h4>
-        </div>
-        <div className="card-body">
+      {/* Report Details Card */}
+      <Card className="mb-4 shadow">
+        <CardHeader style={{ 
+          backgroundColor: colors.primary,
+          color: colors.secondary,
+          borderTopLeftRadius: 'inherit',
+          borderTopRightRadius: 'inherit' 
+        }}>
+          <CardTitle tag="h5" className="mb-0">
+            Report Details
+          </CardTitle>
+        </CardHeader>
+        
+        <CardBody style={{ 
+          backgroundColor: colors.cardBg,
+          color: colors.cardText 
+        }}>
           <p><strong>Asset Name:</strong> {report.asset.systemName}</p>
           <p><strong>Report Date:</strong> {formatDate(report.createdAt)}</p>
           <p><strong>IP Address:</strong> {report.asset.ipAddress}</p>
           <p><strong>OS Version:</strong> {report.asset.osVersion}</p>
-        </div>
-      </div>
+        </CardBody>
+      </Card>
 
-      <div className="card">
-        <div className="card-header">
-          <h4>Vulnerabilities Found</h4>
-        </div>
-        <div className="card-body">
+      {/* Vulnerabilities Found Card */}
+      <Card className="shadow">
+        <CardHeader style={{ 
+          backgroundColor: colors.primary,
+          color: colors.secondary,
+          borderTopLeftRadius: 'inherit',
+          borderTopRightRadius: 'inherit' 
+        }}>
+          <CardTitle tag="h5" className="mb-0">
+            Vulnerabilities Found
+          </CardTitle>
+        </CardHeader>
+        
+        <CardBody style={{ 
+          backgroundColor: colors.cardBg,
+          color: colors.cardText 
+        }}>
           {report.vulnerabilities && report.vulnerabilities.length > 0 ? (
-            <table className="table table-striped">
+            <table className="table" style={{ 
+              color: colors.cardText,
+              backgroundColor: colors.cardBg // Using the cream color from the theme
+            }}>
               <thead>
-                <tr>
-                  <th>CVE ID</th>
-                  <th>Severity Level</th>
-                  <th>CVSS Score</th>
-                  <th>Actions</th>
+                <tr style={{ 
+                  backgroundColor: '#cad8e7', // The lighter navy color you specified
+                  color: colors.primary  // Dark navy text
+                }}>
+                  <th style={{ padding: '0.75rem' }}>CVE ID</th>
+                  <th style={{ padding: '0.75rem' }}>Severity Level</th>
+                  <th style={{ padding: '0.75rem' }}>CVSS Score</th>
+                  <th style={{ padding: '0.75rem' }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {report.vulnerabilities.map((vulnerability) => (
-                  <tr key={vulnerability.id}>
+                  <tr key={vulnerability.id} style={{ borderColor: '#cad8e7' }}>
                     <td>{vulnerability.cveId}</td>
-                    <td>{vulnerability.severityLevel}</td>
+                    <td>
+  {vulnerability.severityLevel && (
+    <div 
+      className="severity-badge"
+      style={{
+        display: 'inline-block',
+        padding: '0.25rem 0.5rem',
+        borderRadius: '0.25rem',
+        fontSize: '0.75rem',
+        fontWeight: 'bold',
+        backgroundColor: getSeverityColor(vulnerability.severityLevel).bg,
+        color: getSeverityColor(vulnerability.severityLevel).text
+      }}
+    >
+      {vulnerability.severityLevel}
+    </div>
+  )}
+</td>
                     <td>{vulnerability.cvsScore.toFixed(1)}</td>
                     <td>
                       <Link
                         to={`/vulnerability/${vulnerability.id}?reportId=${report.id}`}
-                        className="btn btn-info btn-sm"
+                        style={{
+                          backgroundColor: colors.primary,
+                          color: colors.secondary,
+                          padding: '0.25rem 0.5rem',
+                          borderRadius: '0.2rem',
+                          fontSize: '0.875rem',
+                          textDecoration: 'none',
+                          display: 'inline-block'
+                        }}
                       >
                         View Details
                       </Link>
@@ -124,8 +206,8 @@ export const ReportDetails = () => {
           ) : (
             <p>No vulnerabilities found for this asset.</p>
           )}
-        </div>
-      </div>
+        </CardBody>
+      </Card>
     </div>
   );
 };

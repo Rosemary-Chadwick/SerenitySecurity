@@ -1,76 +1,93 @@
-import { useState } from "react";
-import { NavLink as RRNavLink } from "react-router-dom";
+import React, { useState } from 'react';
+import { Link, NavLink as RRNavLink } from 'react-router-dom';
 import {
-  Button,
   Collapse,
-  Nav,
-  NavLink,
-  NavItem,
   Navbar,
-  NavbarBrand,
   NavbarToggler,
-} from "reactstrap";
-import { logout } from "../managers/authManager";
+  NavbarBrand,
+  Nav,
+  NavItem,
+  NavLink,
+  Container
+} from 'reactstrap';
+import { useTheme } from './theme/ThemeContext';
+import Logo from './common/Logo';
+import ThemeToggle from './common/ThemeToggle';
 
-export default function NavBar({ loggedInUser, setLoggedInUser }) {
-  const [open, setOpen] = useState(false);
-
-  const toggleNavbar = () => setOpen(!open);
+export const NavBar = ({ loggedInUser, setLoggedInUser }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const { colors } = useTheme();
+  
+  const toggle = () => setIsOpen(!isOpen);
 
   return (
-    <div>
-      <Navbar color="light" light fixed="true" expand="lg">
-        <NavbarBrand className="mr-auto" tag={RRNavLink} to="/">
-          Serenity Security
-        </NavbarBrand>
-        {loggedInUser ? (
-          <>
-            <NavbarToggler onClick={toggleNavbar} />
-            <Collapse isOpen={open} navbar>
-              <Nav navbar>
-                <NavItem onClick={() => setOpen(false)}>
-                  <NavLink tag={RRNavLink} to="/">
-                    Home
-                  </NavLink>
-                </NavItem>
-                {loggedInUser.roles?.includes("Admin") && (
-                  <NavItem onClick={() => setOpen(false)}>
-                    <NavLink tag={RRNavLink} to="/admin">
-                      Admin
-                    </NavLink>
-                  </NavItem>
-                )}
+<Navbar
+  expand="md"
+  style={{
+    backgroundColor: '#0a192f',
+    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.2)',
+    padding: '0.25rem 1rem',
+    height: '50px' // Explicitly set a fixed height
+  }}
+  dark
+>
+  <Container className="d-flex align-items-center">
+    {/* Logo and Title */}
+    <NavbarBrand tag={Link} to="/" className="me-auto">
+      <div className="d-flex align-items-center">
+        <Logo width={32} height={32} />
+        <span className="ms-2 fw-bold" style={{ color: colors.secondary }}>
+          Serenity Shield
+        </span>
+      </div>
+    </NavbarBrand>
+        
+        <NavbarToggler onClick={toggle} />
+        
+        <Collapse isOpen={isOpen} navbar>
+          <Nav className="me-auto" navbar>
+            {/* Left side is empty - no navigation links as requested */}
+          </Nav>
+          
+          <Nav className="ms-auto d-flex align-items-center" navbar>
+            <NavItem className="me-3">
+              <ThemeToggle />
+            </NavItem>
+            
+            {loggedInUser ? (
+              <>
                 <NavItem>
                   <NavLink tag={RRNavLink} to="/profile">
-                    My Profile
+                    Profile
                   </NavLink>
                 </NavItem>
-              </Nav>
-            </Collapse>
-            <Button
-              color="primary"
-              onClick={(e) => {
-                e.preventDefault();
-                setOpen(false);
-                logout().then(() => {
-                  setLoggedInUser(null);
-                  setOpen(false);
-                });
-              }}
-            >
-              Logout
-            </Button>
-          </>
-        ) : (
-          <Nav navbar>
-            <NavItem>
-              <NavLink tag={RRNavLink} to="/login">
-                <Button color="primary">Login</Button>
-              </NavLink>
-            </NavItem>
+                <NavItem>
+                  <NavLink
+                    tag={Link}
+                    to="/login"
+                    onClick={() => setLoggedInUser(null)}
+                  >
+                    Logout
+                  </NavLink>
+                </NavItem>
+              </>
+            ) : (
+              <>
+                <NavItem>
+                  <NavLink tag={RRNavLink} to="/login">
+                    Login
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink tag={RRNavLink} to="/register">
+                    Register
+                  </NavLink>
+                </NavItem>
+              </>
+            )}
           </Nav>
-        )}
-      </Navbar>
-    </div>
+        </Collapse>
+      </Container>
+    </Navbar>
   );
-}
+};
